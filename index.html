@@ -1,0 +1,3986 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"
+    />
+    <title>Portal Studios | Alta Performance</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Comic+Neue:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+      :root {
+        /* TEMA LIGHT (Padrão) */
+        --primary: #7c3aed;
+        --primary-light: #ddd6fe;
+        --primary-bg-active: #f3e8ff;
+        --bg-body: #f3f4f6;
+        --bg-card: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+        --success: #10b981;
+        --error: #ef4444;
+        --rest: #3b82f6;
+        --gold: #f59e0b;
+        --purple-dark: #581c87;
+        --gradient: linear-gradient(135deg, #7c3aed 0%, #c084fc 100%);
+        --shadow: 0 10px 30px -10px rgba(124, 58, 237, 0.2);
+        --border-color: #e5e7eb;
+        --font-main: "Poppins", sans-serif;
+      }
+
+      /* TEMA DARK */
+      body.dark-mode {
+        --primary: #a78bfa;
+        --primary-light: #4c1d95;
+        --primary-bg-active: #2e1065;
+        --bg-body: #111827;
+        --bg-card: #1f2937;
+        --text-main: #f9fafb;
+        --text-muted: #9ca3af;
+        --border-color: #374151;
+        --shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      }
+
+      /* TEMA SNOOPY */
+      body.theme-snoopy {
+        --primary: #000000;
+        --primary-light: #fef08a;
+        --primary-bg-active: #fffbeb;
+        --bg-body: #ffffff;
+        --bg-card: #f9fafb;
+        --text-main: #111827;
+        --text-muted: #4b5563;
+        --success: #22c55e;
+        --error: #ef4444;
+        --rest: #60a5fa;
+        --gold: #fbbf24;
+        --gradient: linear-gradient(135deg, #000000 0%, #4b5563 100%);
+        --shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+        --border-color: #000;
+        --font-main: "Comic Neue", cursive, sans-serif;
+      }
+      body.theme-snoopy * {
+        border-radius: 12px !important;
+      }
+      body.theme-snoopy .routine-card,
+      body.theme-snoopy .nav-btn,
+      body.theme-snoopy .btn-action,
+      body.theme-snoopy .avatar {
+        border: 2px solid #000 !important;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: var(--font-main);
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      body {
+        background-color: var(--bg-body);
+        color: var(--text-main);
+        height: 100vh;
+        overflow: hidden;
+        transition: background-color 0.5s ease, color 0.5s ease;
+      }
+
+      /* Utilitários */
+      .hidden {
+        display: none !important;
+      }
+      .slide-up {
+        animation: slideUp 0.5s ease-out forwards;
+      }
+      .slide-up-exit {
+        animation: slideUpExit 0.8s ease-in-out forwards;
+      }
+      .pulse {
+        animation: pulse 2s infinite;
+      }
+      .fade-in {
+        animation: fadeIn 0.4s ease forwards;
+      }
+      .fade-out {
+        animation: fadeOut 0.3s ease forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(5px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        to {
+          opacity: 0;
+          transform: translateY(-5px);
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      @keyframes slideUpExit {
+        from {
+          transform: translateY(0);
+          opacity: 1;
+        }
+        to {
+          transform: translateY(-100%);
+          opacity: 1;
+        }
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(124, 58, 237, 0.4);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(124, 58, 237, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(124, 58, 237, 0);
+        }
+      }
+
+      /* Loading Animation (Revisado) */
+      .loading-bar-container {
+        width: 80%;
+        max-width: 300px;
+        height: 8px;
+        background: var(--bg-body);
+        border-radius: 4px;
+        margin-top: 15px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      }
+      .loading-bar-fill {
+        height: 100%;
+        background: var(--gradient);
+        width: 0%;
+        /* A transição será controlada via JS para fluidez e micro-pausas */
+        border-radius: 4px;
+      }
+      #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-card);
+        z-index: 9999;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: opacity 0.5s;
+      }
+      .loading-percent-text {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+        font-weight: 600;
+      }
+
+      /* Welcome */
+      #welcome-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: var(--bg-card);
+        z-index: 2000;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+      }
+      .hero-img {
+        width: 150px;
+        height: 150px;
+        margin-bottom: 20px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid var(--primary-light);
+      }
+      .welcome-input {
+        margin-top: 20px;
+        padding: 15px 25px;
+        border-radius: 50px;
+        border: 2px solid var(--primary-light);
+        font-size: 1.1rem;
+        width: 80%;
+        max-width: 300px;
+        text-align: center;
+        background: var(--bg-card);
+        color: var(--text-main);
+        outline: none;
+      }
+      .btn-start {
+        margin-top: 20px;
+        background: var(--gradient);
+        color: white;
+        border: none;
+        padding: 15px 40px;
+        border-radius: 50px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: 0.2s;
+      }
+      .btn-start:hover {
+        transform: scale(1.05);
+      }
+
+      /* Layout */
+      #app-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      header {
+        background: var(--bg-card);
+        padding: max(10px, env(safe-area-inset-top)) 20px 10px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+        z-index: 100;
+      }
+      .header-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      .profile-area {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        cursor: pointer;
+      }
+      .avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary);
+        transition: 0.3s;
+      }
+      .avatar.lvl-1 {
+        border-color: var(--border-color);
+      }
+      .avatar.lvl-5 {
+        border-color: var(--primary);
+        box-shadow: 0 0 5px var(--primary);
+      }
+      .avatar.lvl-10 {
+        border-color: var(--gold);
+        box-shadow: 0 0 10px var(--gold);
+      }
+      .avatar.lvl-20 {
+        border-color: var(--success);
+        box-shadow: 0 0 15px var(--success);
+        border-width: 3px;
+      }
+      .avatar.lvl-30 {
+        border-color: #f43f5e;
+        box-shadow: 0 0 20px #f43f5e;
+        border-width: 4px;
+      }
+      .avatar.lvl-40 {
+        border-color: #7e22ce;
+        box-shadow: 0 0 20px #7e22ce;
+        border-width: 5px;
+      }
+
+      .user-info h2 {
+        font-size: 1rem;
+        font-weight: 700;
+        line-height: 1.1;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .badge-title {
+        font-size: 0.7rem;
+        color: var(--primary);
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .header-fire-badge {
+        background: var(--primary-bg-active);
+        color: var(--primary);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        border: 1px solid var(--primary-light);
+      }
+
+      /* XP Bar */
+      .gamification-bar {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        width: 100%;
+        background: var(--bg-body);
+        padding: 5px 15px;
+        border-radius: 12px;
+      }
+      .xp-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .xp-text {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-bottom: 2px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .xp-bar-bg {
+        width: 100%;
+        height: 6px;
+        background: var(--border-color);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .xp-bar-fill {
+        height: 100%;
+        background: var(--gradient);
+        width: 0%;
+        transition: width 1s ease;
+      }
+
+      /* Nav */
+      .nav-menu {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .nav-menu::-webkit-scrollbar {
+        display: none;
+      }
+      .nav-btn {
+        background: transparent;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 12px;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-weight: 500;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-shrink: 0;
+        white-space: nowrap;
+      }
+      .nav-btn.active,
+      .nav-btn:hover {
+        background: var(--primary-light);
+        color: var(--text-main);
+      }
+      .btn-logout {
+        color: var(--error);
+        cursor: pointer;
+        font-size: 1.2rem;
+        margin-left: auto;
+      }
+
+      /* Conteúdo */
+      #content-area {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        scroll-behavior: smooth;
+        padding-bottom: 80px;
+      }
+
+      /* Rotina */
+      .day-group {
+        margin-bottom: 40px;
+        opacity: 0.6;
+        transition: 0.3s;
+      }
+      .day-group.today {
+        opacity: 1;
+      }
+      .day-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 15px;
+      }
+      .day-header h2 {
+        font-size: 1.5rem;
+        color: var(--primary);
+      }
+      .today-badge {
+        background: var(--primary);
+        color: white;
+        padding: 4px 10px;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 700;
+      }
+      .routine-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .routine-card {
+        background: var(--bg-card);
+        padding: 15px 20px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        border-left: 4px solid transparent;
+        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        position: relative;
+      }
+      .routine-card.past {
+        opacity: 0.5;
+        filter: grayscale(100%);
+        border-left: 4px solid var(--border-color);
+        background: var(--bg-body);
+      }
+      .routine-card.future {
+        border-left: 4px solid transparent;
+        background: var(--bg-card);
+      }
+      .routine-card.active-now {
+        border-left: 4px solid var(--primary);
+        background: var(--primary-bg-active);
+        box-shadow: 0 8px 20px rgba(124, 58, 237, 0.25);
+        transform: scale(1.02);
+        z-index: 10;
+      }
+      .time-pill {
+        background: var(--primary-light);
+        color: var(--text-main);
+        padding: 6px 12px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+      .routine-card.active-now .time-pill {
+        background: var(--primary);
+        color: white;
+      }
+      .status-badge {
+        font-size: 0.65rem;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 6px;
+        text-transform: uppercase;
+        margin-left: 8px;
+        display: inline-block;
+        vertical-align: middle;
+      }
+      .status-badge.now {
+        background: var(--primary);
+        color: white;
+        animation: pulseBadge 1.5s infinite;
+      }
+      .status-badge.done {
+        background: var(--success);
+        color: white;
+      }
+      @keyframes pulseBadge {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.7;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      .btn-toggle-edit {
+        background: var(--bg-body);
+        border: 2px solid var(--border-color);
+        padding: 8px 15px;
+        border-radius: 10px;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .btn-toggle-edit.editing {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+      .edit-controls {
+        display: none;
+        gap: 10px;
+        margin-left: auto;
+      }
+      .edit-mode .edit-controls {
+        display: flex;
+      }
+      .btn-edit-action {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 8px;
+        transition: 0.2s;
+        font-size: 1rem;
+      }
+      .btn-edit-action.edit {
+        color: var(--text-muted);
+      }
+      .btn-edit-action.edit:hover {
+        color: var(--primary);
+        background: var(--bg-body);
+      }
+      .btn-edit-action.delete {
+        color: var(--text-muted);
+      }
+      .btn-edit-action.delete:hover {
+        color: var(--error);
+        background: #fee2e2;
+      }
+      .add-task-btn {
+        width: 100%;
+        padding: 12px;
+        border: 2px dashed var(--border-color);
+        background: transparent;
+        color: var(--text-muted);
+        border-radius: 12px;
+        cursor: pointer;
+        margin-top: 10px;
+        display: none;
+        font-weight: 600;
+        transition: 0.2s;
+      }
+      .edit-mode .add-task-btn {
+        display: block;
+      }
+      .add-task-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+      .edit-mode .routine-card {
+        border: 1px dashed var(--primary-light);
+        cursor: default;
+      }
+
+      /* Foguinho, Heatmap */
+      .fire-dashboard {
+        text-align: center;
+      }
+      .streak-number {
+        font-size: 4rem;
+        font-weight: 800;
+        color: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+      .heatmap-container {
+        padding: 20px;
+        background: var(--bg-card);
+        border-radius: 20px;
+        box-shadow: var(--shadow);
+        overflow-x: auto;
+        margin-top: 20px;
+      }
+      .heatmap-grid {
+        display: grid;
+        grid-template-columns: repeat(25, 1fr);
+        gap: 4px;
+        min-width: max-content;
+      }
+      .day-box {
+        width: 14px;
+        height: 14px;
+        background: var(--border-color);
+        border-radius: 3px;
+      }
+      .day-box.done {
+        background: var(--primary);
+      }
+      .day-box.rest {
+        background: var(--rest);
+      }
+      .day-box.fail {
+        background: var(--error);
+      }
+      .fire-timer {
+        margin-top: 10px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        background: var(--bg-body);
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+      }
+
+      .btn-action {
+        padding: 15px 30px;
+        border-radius: 15px;
+        border: none;
+        font-weight: 600;
+        cursor: pointer;
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: 0.3s;
+      }
+      .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 30px;
+        flex-wrap: wrap;
+      }
+      .btn-register {
+        background: var(--gradient);
+        color: white;
+        box-shadow: var(--shadow);
+      }
+      .btn-undo {
+        background: var(--border-color);
+        color: var(--text-muted);
+      }
+
+      /* Flashcards */
+      .flashcards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+      .deck-card {
+        background: var(--bg-card);
+        padding: 20px;
+        border-radius: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+        position: relative;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: 0.2s;
+      }
+      .deck-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+      }
+      .add-deck-card {
+        border: 2px dashed var(--border-color);
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        min-height: 180px;
+      }
+      .deck-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        gap: 10px;
+      }
+      .deck-btn {
+        background: transparent;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 1.1rem;
+      }
+      .deck-btn:hover {
+        color: var(--primary);
+      }
+
+      /* Estudo */
+      .study-container {
+        max-width: 500px;
+        margin: 0 auto;
+        perspective: 1000px;
+      }
+      .flashcard-3d {
+        width: 100%;
+        min-height: 300px;
+        transform-style: preserve-3d;
+        transition: transform 0.6s;
+        position: relative;
+        cursor: pointer;
+      }
+      .flashcard-3d.flipped {
+        transform: rotateY(180deg);
+      }
+      .card-face {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        backface-visibility: hidden;
+        border-radius: 20px;
+        background: var(--bg-card);
+        box-shadow: var(--shadow);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        padding: 30px;
+        text-align: center;
+        border: 2px solid var(--border-color);
+      }
+      .card-face.back {
+        transform: rotateY(180deg);
+        background: var(--primary-bg-active);
+        border-color: var(--primary);
+      }
+      .card-text {
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+      .study-controls {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+      }
+      .btn-study {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: none;
+        font-size: 1.5rem;
+        color: white;
+        cursor: pointer;
+        box-shadow: var(--shadow);
+        transition: 0.2s;
+      }
+      .btn-study:hover {
+        transform: scale(1.1);
+      }
+      .btn-wrong {
+        background: var(--error);
+      }
+      .btn-correct {
+        background: var(--success);
+      }
+      .deck-end-screen {
+        background: var(--bg-card);
+        padding: 40px;
+        border-radius: 20px;
+        border: 2px solid var(--primary);
+        text-align: center;
+        animation: fadeIn 0.5s ease;
+      }
+
+      /* Separação de Abas (Sub-menus) */
+      .sub-nav {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        overflow-x: auto;
+      }
+      .sub-nav-btn {
+        flex: 1;
+        padding: 10px;
+        border: none;
+        background: var(--bg-card);
+        border-radius: 12px;
+        cursor: pointer;
+        color: var(--text-muted);
+        font-weight: 600;
+        border: 2px solid transparent;
+        min-width: 100px;
+        transition: 0.3s;
+      }
+      .sub-nav-btn.active {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+
+      /* Filtros Stats */
+      .stats-filter-container {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 15px;
+        overflow-x: auto;
+      }
+      .stats-filter-btn {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        border: 1px solid var(--border-color);
+        background: var(--bg-card);
+        color: var(--text-muted);
+        cursor: pointer;
+        white-space: nowrap;
+        transition: 0.3s;
+      }
+      .stats-filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        margin-bottom: 30px;
+      }
+      .stat-card {
+        background: var(--bg-card);
+        padding: 20px;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+      }
+      .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .stat-label {
+        font-size: 0.8rem;
+        color: var(--primary);
+        font-weight: 600;
+        margin-top: 5px;
+      }
+      .stat-card.correct .stat-value,
+      .stat-card.correct .stat-label {
+        color: var(--success);
+      }
+      .stat-card.wrong .stat-value,
+      .stat-card.wrong .stat-label {
+        color: var(--error);
+      }
+
+      .stat-card.correct {
+        border: 2px solid var(--success);
+        background: #f0fdf4;
+      }
+      .stat-card.wrong {
+        border: 2px solid var(--error);
+        background: #fef2f2;
+      }
+      .dark-mode .stat-card.correct {
+        background: #064e3b;
+      }
+      .dark-mode .stat-card.wrong {
+        background: #7f1d1d;
+      }
+
+      /* Conquistas (Revisado + Animações) */
+      .achievements-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 30px;
+      }
+      .ach-stats-dash {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+      .ach-stat-box {
+        background: var(--primary-bg-active);
+        padding: 15px;
+        border-radius: 15px;
+        border: 1px solid var(--primary-light);
+        text-align: center;
+      }
+      .ach-stat-val {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary);
+      }
+      .ach-stat-lbl {
+        font-size: 0.7rem;
+        color: var(--text-muted);
+      }
+
+      /* Filtro de Conquistas */
+      .ach-filter-bar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 15px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+      }
+      .ach-filter-btn {
+        border: none;
+        background: var(--bg-card);
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        transition: 0.3s;
+      }
+      .ach-filter-btn.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .ach-list {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+      }
+      .ach-cat-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+      }
+      .ach-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border-color);
+        padding: 15px;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: 0.3s;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Staggered Animation for Achievements */
+      @keyframes staggerSlideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .stagger-item {
+        opacity: 0;
+        animation: staggerSlideIn 0.4s ease forwards;
+      }
+
+      .ach-card.completed {
+        border-color: var(--success);
+        background: var(--primary-bg-active);
+      }
+      .ach-icon {
+        font-size: 1.8rem;
+        width: 50px;
+        text-align: center;
+        opacity: 0.5;
+      }
+      .ach-card.completed .ach-icon {
+        opacity: 1;
+      }
+      .ach-content {
+        flex: 1;
+      }
+      .ach-name {
+        font-weight: 700;
+        font-size: 0.95rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .difficulty-badge {
+        font-size: 0.6rem;
+        padding: 2px 6px;
+        border-radius: 4px;
+        text-transform: uppercase;
+        font-weight: 800;
+      }
+      .diff-easy {
+        background: #d1fae5;
+        color: #047857;
+      }
+      .diff-med {
+        background: #fef3c7;
+        color: #b45309;
+      }
+      .diff-hard {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .diff-imp {
+        background: #f3e8ff;
+        color: #581c87;
+        border: 1px solid #d8b4fe;
+      }
+
+      .ach-desc {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        cursor: pointer;
+        background: var(--bg-body);
+        padding: 5px;
+        border-radius: 5px;
+        margin-top: 5px;
+      }
+      .ach-desc.blur {
+        filter: blur(4px);
+        user-select: none;
+      }
+      .ach-desc.blur:active {
+        filter: none;
+      }
+      .ach-progress-bar-bg {
+        width: 100%;
+        height: 6px;
+        background: var(--border-color);
+        border-radius: 3px;
+        margin-top: 8px;
+        overflow: hidden;
+      }
+      .ach-progress-bar-fill {
+        height: 100%;
+        background: var(--gradient);
+        width: 0%;
+        transition: width 1s ease;
+      }
+      .ach-card.completed .ach-progress-bar-fill {
+        background: var(--success);
+      }
+      .ach-status {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.7rem;
+        color: var(--text-muted);
+        margin-top: 5px;
+      }
+
+      /* Configurações */
+      .settings-container {
+        max-width: 500px;
+        margin: 0 auto;
+        background: var(--bg-card);
+        padding: 30px;
+        border-radius: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+        text-align: left;
+      }
+      .form-input {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid var(--border-color);
+        background: var(--bg-body);
+        color: var(--text-main);
+        border-radius: 10px;
+        outline: none;
+      }
+      .theme-toggle {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: var(--bg-body);
+        border-radius: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        opacity: 0.7;
+      }
+      .theme-toggle.unlocked {
+        opacity: 1;
+      }
+      .theme-toggle.locked {
+        pointer-events: none;
+        filter: grayscale(1);
+      }
+      .theme-toggle.active {
+        border-color: var(--primary);
+        background: var(--primary-bg-active);
+        opacity: 1;
+      }
+      .lock-icon {
+        font-size: 0.8rem;
+        margin-left: 5px;
+        color: var(--text-muted);
+      }
+      .toggle-switch-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: var(--bg-body);
+        border-radius: 12px;
+        margin-bottom: 10px;
+      }
+
+      /* Modais */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        opacity: 0;
+        pointer-events: none;
+        transition: 0.3s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+      .modal-card {
+        background: var(--bg-card);
+        width: 90%;
+        max-width: 450px;
+        padding: 25px;
+        border-radius: 25px;
+        text-align: center;
+        transform: scale(0.9);
+        transition: 0.3s;
+        max-height: 90vh;
+        overflow-y: auto;
+        color: var(--text-main);
+      }
+      .modal-overlay.open .modal-card {
+        transform: scale(1);
+      }
+      .modal-options {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+      .option-btn {
+        width: 60px;
+        height: 60px;
+        border-radius: 15px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        transition: 0.2s;
+        background: var(--border-color);
+        color: var(--text-muted);
+      }
+      .option-btn.selected#opt-focus {
+        background: var(--primary-light);
+        color: var(--primary);
+        border-color: var(--primary);
+      }
+      .option-btn.selected#opt-rest {
+        background: #dbeafe;
+        color: var(--rest);
+        border-color: var(--rest);
+      }
+      .option-btn.selected#opt-fail {
+        background: #fee2e2;
+        color: var(--error);
+        border-color: var(--error);
+      }
+
+      .dynamic-inputs {
+        text-align: left;
+        background: var(--bg-body);
+        padding: 15px;
+        border-radius: 10px;
+        margin-top: 10px;
+      }
+      .input-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+        align-items: flex-end;
+      }
+      .input-mini {
+        flex: 1;
+      }
+
+      .subject-checklist {
+        max-height: 200px;
+        overflow-y: auto;
+        margin-bottom: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+      }
+      .subject-check-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px;
+        background: var(--bg-body);
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+      }
+      .subject-check-item:has(input:checked) {
+        border-color: var(--primary);
+        background: var(--primary-bg-active);
+      }
+      .subject-check-item.add-new {
+        justify-content: center;
+        border: 2px dashed var(--border-color);
+        color: var(--primary);
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .subject-check-item.add-new:hover {
+        background: var(--primary-light);
+        border-color: var(--primary);
+      }
+
+      .subject-progress-card {
+        background: var(--bg-body);
+        padding: 12px;
+        border-radius: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: 0.2s;
+      }
+      .subject-progress-card:hover {
+        background: var(--primary-light);
+      }
+
+      .prog-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: var(--bg-card);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 1.2rem;
+        color: var(--primary);
+      }
+      .prog-info {
+        flex: 1;
+      }
+      .prog-header {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+      }
+      .prog-bar-bg {
+        height: 8px;
+        background: var(--border-color);
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .prog-bar-fill {
+        height: 100%;
+        background: var(--primary);
+      }
+      .prog-stats-mini {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        display: flex;
+        justify-content: space-between;
+        margin-top: 4px;
+      }
+
+      #toast-container {
+        position: fixed;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 3000;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 90%;
+        max-width: 400px;
+        pointer-events: none;
+      }
+      .toast {
+        background: var(--bg-card);
+        border-left: 5px solid var(--gold);
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: slideUp 0.5s forwards;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        pointer-events: auto;
+      }
+
+/* --- NOVO CSS: ONBOARDING & LOGIN ANIMADO --- */
+.onboarding-container {
+        width: 100%;
+        max-width: 350px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        position: relative;
+      }
+      .step-card {
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        animation: slideInRight 0.5s ease forwards;
+      }
+      .step-card.active {
+        display: flex;
+      }
+      @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(20px); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      .step-indicator {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .step-dot {
+        width: 8px;
+        height: 8px;
+        background: var(--border-color);
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .step-dot.active {
+        background: var(--primary);
+        transform: scale(1.3);
+      }
+      .step-dot.completed {
+        background: var(--success);
+      }
+      .selection-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .selection-btn {
+        padding: 12px;
+        border: 2px solid var(--border-color);
+        background: var(--bg-card);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: 0.2s;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        text-align: center;
+      }
+      .selection-btn:hover {
+        border-color: var(--primary-light);
+      }
+      .selection-btn.selected {
+        border-color: var(--primary);
+        background: var(--primary-bg-active);
+        color: var(--primary);
+        font-weight: 700;
+        box-shadow: 0 0 10px rgba(124, 58, 237, 0.2);
+      }
+      .onboarding-progress-text {
+        text-align: right;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        margin-top: -10px;
+        font-weight: 600;
+      }
+      /* Botão de Reset Parcial Específico */
+      .btn-partial-reset {
+        background: transparent;
+        border: 2px dashed var(--gold);
+        color: var(--gold);
+        width: 100%;
+        margin-top: 10px;
+        opacity: 0.8;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 12px;
+        font-weight: 600;
+      }
+      .btn-partial-reset:hover {
+        opacity: 1;
+        background: #fffbeb;
+      }
+
+
+
+
+
+      /* Snoopy Overlay */
+      #snoopy-overlay {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 5000;
+        pointer-events: none;
+        transition: 0.5s;
+        transform: translateY(150%);
+      }
+      #snoopy-overlay.show {
+        transform: translateY(0);
+      }
+      #snoopy-img {
+        width: 150px;
+        height: auto;
+      }
+
+      /* Gráfico Barra Simples */
+      .graph-bar-container {
+        display: flex;
+        height: 20px;
+        border-radius: 10px;
+        overflow: hidden;
+        margin-top: 10px;
+      }
+      .gb-correct {
+        background: var(--success);
+      }
+      .gb-wrong {
+        background: var(--error);
+      }
+
+      /* Novos estilos para Perfil Otimizado */
+      .profile-record-badge {
+        background: var(--primary-bg-active);
+        padding: 15px;
+        border-radius: 15px;
+        border: 2px solid var(--primary);
+        display: inline-block;
+        margin-bottom: 20px;
+      }
+      .profile-msg-total {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--text-main);
+        margin: 15px 0;
+        padding: 15px;
+        background: var(--bg-body);
+        border-radius: 15px;
+      }
+
+      /* Responsividade */
+      @media (max-width: 480px) {
+        header {
+          padding: max(15px, env(safe-area-inset-top)) 15px 15px 15px;
+        }
+        .nav-menu {
+          justify-content: space-between;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+        .action-buttons {
+          flex-direction: column;
+          width: 100%;
+        }
+        .btn-action {
+          width: 100%;
+          justify-content: center;
+        }
+        .heatmap-grid {
+          grid-template-columns: repeat(14, 1fr);
+        }
+        .routine-card {
+          flex-wrap: wrap;
+        }
+        .time-pill {
+          width: 100%;
+          text-align: center;
+          margin-bottom: 5px;
+        }
+        .routine-card > div[style="flex:1"] {
+          width: 100%;
+          order: 2;
+        }
+        .routine-card > span[style="font-size:1.5rem;"] {
+          position: absolute;
+          top: 15px;
+          right: 20px;
+        }
+        .edit-controls {
+          width: 100%;
+          justify-content: flex-end;
+          margin-top: 10px;
+          order: 3;
+          border-top: 1px solid var(--border-color);
+          padding-top: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="snoopy-overlay">
+      <img id="snoopy-img" src="" alt="Snoopy Reaction" />
+    </div>
+
+    <div id="loading-overlay" class="hidden">
+      <div class="loading-bar-container">
+        <div class="loading-bar-fill" id="loading-bar"></div>
+      </div>
+      <div class="loading-percent-text" id="loading-percent">0%</div>
+      <h3
+        id="loading-text"
+        style="color: var(--primary); font-weight: 600; margin-top: 10px"
+      >
+        Carregando...
+      </h3>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <div id="welcome-screen">
+      <img
+        src="https://api.dicebear.com/7.x/notionists/svg?seed=Default"
+        alt="Hero"
+        class="hero-img"
+        id="welcome-avatar"
+      />
+      <div id="welcome-new" class="hidden">
+        <h1 style="color: var(--primary); margin-bottom: 5px">
+          Portal Studios
+        </h1>
+        <p
+          style="
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+          "
+        >
+          Seu cantinho de estudos
+        </p>
+        <input
+          type="text"
+          id="name-input"
+          class="welcome-input"
+          placeholder="Como quer ser chamado?"
+        />
+        <button class="btn-start" onclick="initNewUser()">CRIAR PERFIL</button>
+      </div>
+      <div id="welcome-returning" class="hidden">
+        <h1 style="color: var(--primary); margin-bottom: 5px">
+          Portal Studios
+        </h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem">
+          Seu cantinho de estudos
+        </p>
+        <h3
+          id="welcome-name-display"
+          style="margin: 20px 0; font-weight: 600"
+        ></h3>
+        <button class="btn-start" onclick="enterAppSequence()">ENTRAR</button>
+      </div>
+    </div>
+
+    <div id="app-container" class="hidden">
+      <header>
+        <div class="header-top">
+          <div class="profile-area" onclick="openProfileMenu()">
+            <div class="avatar-container">
+              <img src="" alt="Avatar" class="avatar" id="header-avatar" />
+            </div>
+            <div class="user-info">
+              <h2 id="header-name">
+                Usuário
+                <span id="header-fire-badge" class="header-fire-badge hidden">
+                  <i class="fas fa-fire"></i>
+                  <span id="header-fire-score">0</span>
+                </span>
+              </h2>
+              <span class="badge-title" id="header-title">Premium</span>
+            </div>
+          </div>
+          <div style="text-align: right">
+            <i
+              class="fas fa-sign-out-alt btn-logout"
+              onclick="logout()"
+              title="Sair"
+            ></i>
+          </div>
+        </div>
+
+        <div class="gamification-bar">
+          <div class="xp-container">
+            <div class="xp-text">
+              <span>Nível <span id="lvl-num">1</span></span>
+              <span id="xp-fraction">0 XP</span>
+            </div>
+            <div class="xp-bar-bg">
+              <div class="xp-bar-fill" id="xp-bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <nav class="nav-menu">
+          <button class="nav-btn active" onclick="navigate('routine')">
+            <i class="fas fa-calendar-alt"></i> Rotina
+          </button>
+          <button class="nav-btn" onclick="navigate('fire')">
+            <i class="fas fa-fire"></i> Foguinho
+          </button>
+          <button class="nav-btn" onclick="navigate('flashcards')">
+            <i class="fas fa-clone"></i> Flashcards
+          </button>
+          <button class="nav-btn" onclick="navigate('stats')">
+            <i class="fas fa-chart-pie"></i> Estatísticas
+          </button>
+          <button class="nav-btn" onclick="navigate('trophies')">
+            <i class="fas fa-trophy"></i> Troféus
+          </button>
+          <button class="nav-btn" onclick="navigate('settings')">
+            <i class="fas fa-cog"></i> Ajustes
+          </button>
+        </nav>
+      </header>
+
+      <div id="content-area">
+        <div id="view-routine" class="view-section slide-up">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 15px;
+            "
+          >
+            <h3 style="color: var(--text-muted)">Cronograma</h3>
+            <div
+              style="
+                background: var(--primary-light);
+                color: var(--text-main);
+                padding: 5px 10px;
+                border-radius: 10px;
+                font-family: 'Courier New';
+                font-weight: 700;
+              "
+              id="clock"
+            >
+              00:00
+            </div>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              margin-bottom: 15px;
+            "
+          >
+            <button
+              class="btn-toggle-edit"
+              onclick="toggleEditRoutine()"
+              id="btn-edit-toggle"
+            >
+              <i class="fas fa-pencil-alt"></i> Editar Rotina
+            </button>
+          </div>
+          <div id="full-routine-list"></div>
+        </div>
+
+        <div id="view-flashcards" class="view-section hidden slide-up">
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 20px;
+            "
+          >
+            <h2 style="color: var(--primary)">Meus Decks</h2>
+            <span style="font-size: 0.9rem; color: var(--text-muted)"
+              >Estudo Ativo</span
+            >
+          </div>
+          <div class="flashcards-grid" id="decks-container"></div>
+        </div>
+
+        <div id="view-fire" class="view-section hidden slide-up">
+          <div class="fire-dashboard">
+            <div class="streak-counter">
+              <p style="color: var(--text-muted); font-weight: 600">
+                OFENSIVA ATUAL
+              </p>
+              <div class="streak-number">
+                <i class="fas fa-fire"></i> <span id="streak-count">0</span>
+              </div>
+              <div id="fire-timer-display" class="fire-timer hidden">
+                Próximo registro: 00:00:00
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button
+                class="btn-action btn-register"
+                id="btn-register-today"
+                onclick="openRegisterModal()"
+              >
+                <i class="fas fa-check-circle"></i> REGISTRAR HOJE
+              </button>
+              <button
+                class="btn-action btn-register hidden"
+                id="btn-edit-log"
+                onclick="openEditLog()"
+              >
+                <i class="fas fa-edit"></i> EDITAR ATIVIDADES
+              </button>
+              <button class="btn-action btn-undo" onclick="undoLastAction()">
+                <i class="fas fa-undo"></i> Desfazer
+              </button>
+            </div>
+            <div class="heatmap-container">
+              <div class="heatmap-grid" id="heatmap"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-stats" class="view-section hidden slide-up">
+          <h2 style="margin-bottom: 10px; color: var(--primary)">
+            Relatório de Estudo 📊
+          </h2>
+          <div class="stats-filter-container">
+            <button
+              class="stats-filter-btn active"
+              onclick="setStatsFilter('today', this)"
+            >
+              Hoje
+            </button>
+            <button
+              class="stats-filter-btn"
+              onclick="setStatsFilter('week', this)"
+            >
+              7 Dias
+            </button>
+            <button
+              class="stats-filter-btn"
+              onclick="setStatsFilter('month', this)"
+            >
+              30 Dias
+            </button>
+            <button
+              class="stats-filter-btn"
+              onclick="setStatsFilter('global', this)"
+            >
+              Global
+            </button>
+          </div>
+
+          <div id="stats-summary-box">
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-value" id="total-questions">0</div>
+                <div class="stat-label">QUESTÕES</div>
+              </div>
+              <div class="stat-card correct">
+                <div class="stat-value" id="total-correct">0</div>
+                <div class="stat-label">ACERTOS</div>
+              </div>
+              <div class="stat-card wrong">
+                <div class="stat-value" id="total-wrong">0</div>
+                <div class="stat-label">ERROS</div>
+              </div>
+            </div>
+          </div>
+
+          <h3 style="margin-bottom: 15px">Desempenho por Matéria</h3>
+          <div id="subject-breakdown"></div>
+        </div>
+
+        <div id="view-trophies" class="view-section hidden slide-up">
+          <h2 style="margin-bottom: 20px; color: var(--primary)">
+            Meus Troféus 🏆
+          </h2>
+          <div class="ach-stats-dash">
+            <div class="ach-stat-box">
+              <div class="ach-stat-val" id="stat-ach-focus">0</div>
+              <div class="ach-stat-lbl">Foco</div>
+            </div>
+            <div class="ach-stat-box">
+              <div class="ach-stat-val" id="stat-ach-lvl">0%</div>
+              <div class="ach-stat-lbl">Nível</div>
+            </div>
+            <div class="ach-stat-box">
+              <div class="ach-stat-val" id="stat-ach-total">0</div>
+              <div class="ach-stat-lbl">Total</div>
+            </div>
+          </div>
+
+          <div class="ach-filter-bar">
+            <button
+              class="ach-filter-btn active"
+              onclick="filterAchievements('all', this)"
+            >
+              Todos
+            </button>
+            <button
+              class="ach-filter-btn"
+              onclick="filterAchievements('easy', this)"
+            >
+              Fácil
+            </button>
+            <button
+              class="ach-filter-btn"
+              onclick="filterAchievements('med', this)"
+            >
+              Médio
+            </button>
+            <button
+              class="ach-filter-btn"
+              onclick="filterAchievements('hard', this)"
+            >
+              Difícil
+            </button>
+            <button
+              class="ach-filter-btn"
+              onclick="filterAchievements('imp', this)"
+            >
+              Impossível
+            </button>
+          </div>
+
+          <div id="achievements-container" class="achievements-wrapper"></div>
+        </div>
+
+        <div id="view-settings" class="view-section hidden slide-up">
+          <div class="settings-container">
+            <h2 style="margin-bottom: 20px">Perfil & Ajustes</h2>
+            <div style="text-align: center; margin-bottom: 15px">
+              <img
+                src=""
+                id="settings-avatar-preview"
+                class="avatar"
+                style="width: 80px; height: 80px; margin-bottom: 10px"
+              />
+              <br />
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <button
+                  class="btn-action btn-undo"
+                  style="padding: 8px 15px; font-size: 0.8rem"
+                  onclick="randomizeAvatar()"
+                >
+                  <i class="fas fa-random"></i> Aleatório
+                </button>
+                <label
+                  for="file-upload"
+                  class="btn-action btn-register"
+                  style="
+                    padding: 8px 15px;
+                    font-size: 0.8rem;
+                    cursor: pointer;
+                    margin: 0;
+                  "
+                  ><i class="fas fa-camera"></i> Foto</label
+                >
+                <input
+                  type="file"
+                  id="file-upload"
+                  accept="image/*"
+                  style="display: none"
+                  onchange="handleFileUpload(this)"
+                />
+              </div>
+            </div>
+            <div class="form-group">
+              <label
+                style="
+                  font-size: 0.9rem;
+                  font-weight: 600;
+                  color: var(--text-muted);
+                "
+                >Nome de Usuário</label
+              >
+              <input type="text" id="settings-name" class="form-input" />
+            </div>
+            <h4 style="margin: 20px 0 10px">Preferências</h4>
+            <div class="toggle-switch-container">
+              <span>Pular tela inicial</span>
+              <input
+                type="checkbox"
+                id="skip-welcome-chk"
+                onchange="toggleSkipWelcome()"
+              />
+            </div>
+            <div class="toggle-switch-container">
+              <span>Mostrar Recorde no Topo</span>
+              <input
+                type="checkbox"
+                id="show-fire-chk"
+                checked
+                onchange="toggleHeaderFire()"
+              />
+            </div>
+
+            <h4 style="margin: 20px 0 10px">Temas</h4>
+            <div class="theme-toggle unlocked" onclick="toggleTheme('light')">
+              <span>Claro (Padrão)</span><i class="fas fa-sun"></i>
+            </div>
+            <div class="theme-toggle unlocked" onclick="toggleTheme('dark')">
+              <span>Escuro</span><i class="fas fa-moon"></i>
+            </div>
+            <div
+              class="theme-toggle locked"
+              id="theme-btn-neon"
+              onclick="toggleTheme('neon')"
+            >
+              <span>Neon (Nível 10) <i class="fas fa-lock lock-icon"></i></span
+              ><i class="fas fa-bolt"></i>
+            </div>
+            <div
+              class="theme-toggle locked"
+              id="theme-btn-deep"
+              onclick="toggleTheme('deep')"
+            >
+              <span
+                >Deep Dark (Nível 20)
+                <i class="fas fa-lock lock-icon"></i></span
+              ><i class="fas fa-moon"></i>
+            </div>
+            <h4 style="margin: 15px 0 10px">Experimental</h4>
+            <div
+              class="theme-toggle"
+              id="toggle-snoopy"
+              onclick="toggleSnoopy()"
+            >
+              <span>Template Snoopy</span><i class="fas fa-dog"></i>
+            </div>
+            <button
+              class="btn-action btn-register"
+              style="width: 100%; justify-content: center; margin-top: 20px"
+              onclick="saveSettings()"
+            >
+              <i class="fas fa-save"></i> Salvar Alterações
+            </button>
+            <br /><br />
+            <hr />
+            <br />
+            <button
+              class="btn-action btn-undo"
+              style="
+                width: 100%;
+                justify-content: center;
+                background: var(--error);
+                color: white;
+              "
+              onclick="resetData()"
+            >
+              <i class="fas fa-trash"></i> RESETAR TUDO
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="subject-detail-modal">
+      <div class="modal-card">
+        <div style="text-align: right">
+          <i
+            class="fas fa-times"
+            style="cursor: pointer; font-size: 1.2rem"
+            onclick="document.getElementById('subject-detail-modal').classList.remove('open')"
+          ></i>
+        </div>
+        <h2
+          id="detail-subject-title"
+          style="margin-bottom: 20px; color: var(--primary)"
+        >
+          Matéria
+        </h2>
+
+        <div class="sub-nav">
+          <button
+            class="sub-nav-btn active"
+            id="btn-tab-assert"
+            onclick="switchSubjectTab('assert')"
+          >
+            Assertividade
+          </button>
+          <button
+            class="sub-nav-btn"
+            id="btn-tab-quest"
+            onclick="switchSubjectTab('quest')"
+          >
+            Questões
+          </button>
+        </div>
+
+        <div class="stats-filter-container">
+          <button
+            class="stats-filter-btn active"
+            onclick="filterSubjectDetail('today', this)"
+          >
+            Hoje
+          </button>
+          <button
+            class="stats-filter-btn"
+            onclick="filterSubjectDetail('week', this)"
+          >
+            7 Dias
+          </button>
+          <button
+            class="stats-filter-btn"
+            onclick="filterSubjectDetail('month', this)"
+          >
+            30 Dias
+          </button>
+          <button
+            class="stats-filter-btn"
+            onclick="filterSubjectDetail('global', this)"
+          >
+            Global
+          </button>
+        </div>
+
+        <div id="tab-assert-content" class="fade-in">
+          <div style="margin: 30px 0">
+            <h1
+              id="detail-pct"
+              style="font-size: 3.5rem; color: var(--primary); font-weight: 800"
+            >
+              0%
+            </h1>
+            <p style="color: var(--text-muted); font-size: 0.9rem">
+              Aproveitamento no período
+            </p>
+          </div>
+          <div class="graph-bar-container" style="height: 30px">
+            <div id="detail-bar-c" class="gb-correct" style="width: 50%"></div>
+            <div id="detail-bar-w" class="gb-wrong" style="width: 50%"></div>
+          </div>
+          <div
+            style="
+              display: flex;
+              justify-content: space-between;
+              margin-top: 10px;
+              font-size: 0.8rem;
+              font-weight: 600;
+            "
+          >
+            <span style="color: var(--success)">Acertos</span>
+            <span style="color: var(--error)">Erros</span>
+          </div>
+        </div>
+
+        <div id="tab-quest-content" class="hidden fade-in">
+          <div class="stats-grid" style="grid-template-columns: 1fr">
+            <div class="stat-card">
+              <div class="stat-value" id="q-total">0</div>
+              <div class="stat-label">Total Realizado</div>
+            </div>
+          </div>
+          <div class="stats-grid" style="margin-top: 15px">
+            <div class="stat-card correct">
+              <div class="stat-value" id="q-correct">0</div>
+              <div class="stat-label">Acertos</div>
+            </div>
+            <div class="stat-card wrong">
+              <div class="stat-value" id="q-wrong">0</div>
+              <div class="stat-label">Erros</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="profile-modal">
+      <div class="modal-card">
+        <div style="text-align: right">
+          <i
+            class="fas fa-times"
+            style="cursor: pointer; font-size: 1.2rem"
+            onclick="document.getElementById('profile-modal').classList.remove('open')"
+          ></i>
+        </div>
+        <div style="text-align: center; margin-bottom: 20px">
+          <img
+            id="profile-modal-avatar"
+            class="avatar lvl-1"
+            style="width: 80px; height: 80px; margin: 0 auto 10px auto"
+          />
+          <h2 id="profile-modal-name">Nome</h2>
+          <span class="badge-title" id="profile-modal-title">Premium</span>
+        </div>
+
+        <div style="text-align: center">
+          <div class="profile-record-badge">
+            <div
+              style="
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--primary);
+                text-transform: uppercase;
+              "
+            >
+              Recorde de Ofensiva
+            </div>
+            <div
+              style="font-size: 2.5rem; font-weight: 800; color: var(--primary)"
+            >
+              <i class="fas fa-fire"></i> <span id="prof-max-streak">0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="profile-msg-total">
+          Olá, <span id="prof-msg-name">Usuário</span><br />
+          Você fez um total de: <br />
+          <span
+            style="font-size: 1.8rem; font-weight: 800; color: var(--primary)"
+            id="prof-total-q"
+            >0</span
+          >
+          questões
+        </div>
+
+        <button
+          class="btn-undo"
+          style="width: 100%; margin-top: 10px"
+          onclick="navigate('settings'); document.getElementById('profile-modal').classList.remove('open');"
+        >
+          Configurações
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="register-modal">
+      <div class="modal-card">
+        <div style="text-align: right">
+          <i
+            class="fas fa-times"
+            style="cursor: pointer; font-size: 1.2rem"
+            onclick="closeRegisterModal()"
+          ></i>
+        </div>
+        <h2 style="margin-bottom: 15px" id="register-modal-title">
+          Registro Diário
+        </h2>
+        <div class="modal-options">
+          <div class="option-btn" id="opt-focus" onclick="selectType('focus')">
+            <i class="fas fa-brain"></i>
+          </div>
+          <div class="option-btn" id="opt-rest" onclick="selectType('rest')">
+            <i class="fas fa-bed"></i>
+          </div>
+          <div class="option-btn" id="opt-fail" onclick="selectType('fail')">
+            <i class="fas fa-times-circle"></i>
+          </div>
+        </div>
+        <div id="form-focus" class="hidden">
+          <p style="text-align: left; margin-bottom: 5px; font-weight: 600">
+            O que você estudou?
+          </p>
+          <input
+            type="text"
+            id="subject-search"
+            class="form-input"
+            placeholder="🔍 Buscar matéria..."
+            style="margin-bottom: 10px; padding: 8px"
+            onkeyup="filterSubjects()"
+          />
+          <div class="subject-checklist" id="subject-list-container"></div>
+          <div id="dynamic-inputs-container"></div>
+        </div>
+        <button
+          class="btn-start"
+          style="width: 100%; margin-top: 15px"
+          onclick="submitDayLog()"
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="task-modal">
+      <div class="modal-card">
+        <h2 style="margin-bottom: 15px" id="task-modal-title">Editar Tarefa</h2>
+        <input type="hidden" id="task-original-day-idx" />
+        <input type="hidden" id="task-idx" />
+        <div class="form-group">
+          <label
+            style="
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: var(--text-muted);
+            "
+            >Dia da Semana</label
+          >
+          <select id="task-day-select" class="form-input">
+            <option value="1">Segunda-feira</option>
+            <option value="2">Terça-feira</option>
+            <option value="3">Quarta-feira</option>
+            <option value="4">Quinta-feira</option>
+            <option value="5">Sexta-feira</option>
+            <option value="6">Sábado</option>
+            <option value="0">Domingo</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label
+            style="
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: var(--text-muted);
+            "
+            >Horário (Início - Fim)</label
+          >
+          <div style="display: flex; gap: 10px">
+            <input type="time" id="task-start" class="form-input" />
+            <input type="time" id="task-end" class="form-input" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label
+            style="
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: var(--text-muted);
+            "
+            >Título</label
+          >
+          <input
+            type="text"
+            id="task-title"
+            class="form-input"
+            placeholder="Ex: Matemática"
+          />
+        </div>
+        <div class="form-group">
+          <label
+            style="
+              font-size: 0.8rem;
+              font-weight: 600;
+              color: var(--text-muted);
+            "
+            >Emoji</label
+          >
+          <input
+            type="text"
+            id="task-icon"
+            class="form-input"
+            placeholder="Ex: 📚"
+            value="📌"
+          />
+        </div>
+        <button class="btn-register" style="width: 100%" onclick="saveTask()">
+          Salvar & Organizar
+        </button>
+        <button
+          class="btn-undo"
+          style="width: 100%; margin-top: 10px"
+          onclick="document.getElementById('task-modal').classList.remove('open')"
+        >
+          Cancelar
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="deck-modal">
+      <div class="modal-card">
+        <h2 style="margin-bottom: 15px">Novo Baralho</h2>
+        <div class="form-group">
+          <label>Nome</label
+          ><input
+            type="text"
+            id="deck-name"
+            class="form-input"
+            placeholder="Ex: Biologia"
+          />
+        </div>
+        <div class="form-group">
+          <label>Emoji</label
+          ><input
+            type="text"
+            id="deck-emoji"
+            class="form-input"
+            placeholder="Ex: 🧬"
+          />
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button
+            class="btn-undo"
+            onclick="document.getElementById('deck-modal').classList.remove('open')"
+            style="flex: 1"
+          >
+            Cancelar
+          </button>
+          <button class="btn-register" onclick="saveDeck()" style="flex: 1">
+            Criar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="study-modal">
+      <div
+        class="modal-card"
+        style="max-width: 600px; background: transparent; box-shadow: none"
+      >
+        <div id="study-area-content"></div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="add-card-modal">
+      <div class="modal-card">
+        <h3>Adicionar Carta</h3>
+        <div class="form-group">
+          <label>Frente</label
+          ><textarea id="new-card-q" class="form-input" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label>Verso</label
+          ><textarea id="new-card-a" class="form-input" rows="3"></textarea>
+        </div>
+        <div style="display: flex; gap: 10px">
+          <button
+            class="btn-undo"
+            onclick="document.getElementById('add-card-modal').classList.remove('open')"
+            style="flex: 1"
+          >
+            Fechar
+          </button>
+          <button class="btn-register" onclick="saveNewCard()" style="flex: 1">
+            Salvar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // --- DADOS E CONSTANTES ---
+      let appData = {
+        name: "",
+        avatar: "https://api.dicebear.com/7.x/notionists/svg?seed=Default",
+        streak: 0,
+        history: [],
+        xp: 0,
+        level: 1,
+        activeTheme: "light",
+        snoopyMode: false,
+        skipWelcome: false,
+        showFireIcon: true, // Novo: Toggle para mostrar ícone no header
+        flashcards: [
+          { id: 1, title: "Matemática", emoji: "📐", cards: [] },
+          { id: 2, title: "Português", emoji: "📚", cards: [] },
+        ],
+        routine: {},
+        customSubjects: [],
+      };
+
+      const ALL_SUBJECTS = [
+        "Matemática",
+        "Português",
+        "Inglês",
+        "Física",
+        "Química",
+        "Biologia",
+        "História",
+        "Geografia",
+        "Filosofia",
+        "Sociologia",
+        "Artes",
+        "Redação",
+      ];
+
+      let isEditMode = false;
+      let isEditingLog = false;
+      let currentStatsFilter = "global";
+      let currentAchFilter = "all";
+
+      // Variaveis de controle do modal de detalhe de materia
+      let currentSubjectDetail = null;
+      let currentSubjectTab = "assert";
+      let currentSubjectFilter = "global";
+
+      const snoopyAssets = {
+        happy: "https://media.tenor.com/FjM0dJqXzZcAAAAM/snoopy-dance.gif",
+        sad: "https://media.tenor.com/Unu0iYlZ9owAAAAM/snoopy-sad.gif",
+        smart: "https://media.tenor.com/T0a37x1e86MAAAAM/joe-cool-snoopy.gif",
+        sleep: "https://media.tenor.com/5k2bM3wQyQ0AAAAM/snoopy-sleeping.gif",
+      };
+
+      // CONQUISTAS
+      const achievementsData = [
+        // NÍVEL
+        {
+          id: "lvl_5",
+          cat: "Nível",
+          title: "Primeiros Passos",
+          desc: "Alcance o nível 5.",
+          target: 5,
+          icon: "⭐",
+          diff: "easy",
+        },
+        {
+          id: "lvl_10",
+          cat: "Nível",
+          title: "Ganhando XP",
+          desc: "Alcance o nível 10.",
+          target: 10,
+          icon: "🌟",
+          diff: "med",
+        },
+        {
+          id: "lvl_20",
+          cat: "Nível",
+          title: "Veterano",
+          desc: "Alcance o nível 20.",
+          target: 20,
+          icon: "🏆",
+          diff: "hard",
+        },
+        {
+          id: "lvl_40",
+          cat: "Nível",
+          title: "Mestre Supremo",
+          desc: "Alcance o nível 40.",
+          target: 40,
+          icon: "👑",
+          diff: "imp",
+        },
+        // FOCO (OFENSIVA)
+        {
+          id: "focus_7",
+          cat: "Foco",
+          title: "Semana Perfeita",
+          desc: "7 dias de ofensiva.",
+          target: 7,
+          icon: "🔥",
+          diff: "easy",
+        },
+        {
+          id: "focus_30",
+          cat: "Foco",
+          title: "Mês de Foco",
+          desc: "30 dias de ofensiva.",
+          target: 30,
+          icon: "📅",
+          diff: "med",
+        },
+        {
+          id: "focus_75",
+          cat: "Foco",
+          title: "Disciplina de Ferro",
+          desc: "75 dias de ofensiva.",
+          target: 75,
+          icon: "🛡️",
+          diff: "hard",
+        },
+        {
+          id: "focus_100",
+          cat: "Foco",
+          title: "Lenda Viva",
+          desc: "100 dias de ofensiva.",
+          target: 100,
+          icon: "🐲",
+          diff: "imp",
+        },
+        // ATIVIDADES
+        {
+          id: "math_25",
+          cat: "Atividades",
+          sub: "Matemática",
+          title: "Iniciante Exatas",
+          desc: "Faça 25 questões de Matemática.",
+          target: 25,
+          icon: "📐",
+          diff: "easy",
+        },
+        {
+          id: "port_25",
+          cat: "Atividades",
+          sub: "Português",
+          title: "Leitor Ávido",
+          desc: "Faça 25 questões de Português.",
+          target: 25,
+          icon: "📚",
+          diff: "easy",
+        },
+        {
+          id: "ing_25",
+          cat: "Atividades",
+          sub: "Inglês",
+          title: "Hello World",
+          desc: "Faça 25 questões de Inglês.",
+          target: 25,
+          icon: "🗽",
+          diff: "easy",
+        },
+        {
+          id: "fis_25",
+          cat: "Atividades",
+          sub: "Física",
+          title: "Newton",
+          desc: "Faça 25 questões de Física.",
+          target: 25,
+          icon: "🍎",
+          diff: "easy",
+        },
+        {
+          id: "total_80",
+          cat: "Atividades",
+          title: "Estudante Dedicado",
+          desc: "80 questões totais (qualquer matéria).",
+          target: 80,
+          icon: "✍️",
+          diff: "med",
+        },
+        {
+          id: "total_200",
+          cat: "Atividades",
+          title: "Máquina de Estudo",
+          desc: "200 questões totais.",
+          target: 200,
+          icon: "🤖",
+          diff: "hard",
+        },
+        {
+          id: "total_500",
+          cat: "Atividades",
+          title: "Onisciente",
+          desc: "500 questões totais.",
+          target: 500,
+          icon: "👁️",
+          diff: "imp",
+        },
+      ];
+
+      const fullDefaultRoutine = {
+        1: [
+          { time: "06:00 - 06:30", title: "Acordar & Água", icon: "☀️" },
+          { time: "08:00 - 12:00", title: "Estudo Focado", icon: "📚" },
+          { time: "18:00 - 19:00", title: "Banho & Jantar", icon: "🚿" },
+        ],
+        2: [{ time: "08:00 - 12:00", title: "Estudo Focado", icon: "📚" }],
+        3: [{ time: "08:00 - 12:00", title: "Estudo Focado", icon: "📚" }],
+        4: [{ time: "08:00 - 12:00", title: "Estudo Focado", icon: "📚" }],
+        5: [{ time: "08:00 - 12:00", title: "Estudo Focado", icon: "📚" }],
+        6: [{ time: "09:00 - 13:00", title: "Simulado", icon: "📝" }],
+        0: [{ time: "10:00 - 12:00", title: "Planejamento", icon: "📅" }],
+      };
+
+      // --- PERSISTÊNCIA & INICIALIZAÇÃO ---
+      window.onload = function () {
+        const saved = localStorage.getItem("portalData_v9");
+        if (saved) {
+          try {
+            const parsed = JSON.parse(saved);
+            appData = { ...appData, ...parsed };
+            if (!appData.customSubjects) appData.customSubjects = [];
+            // Migração de nova propriedade se não existir
+            if (appData.showFireIcon === undefined) appData.showFireIcon = true;
+          } catch (e) {
+            console.error("Erro ao carregar dados", e);
+          }
+        }
+
+        if (!appData.routine || Object.keys(appData.routine).length === 0) {
+          appData.routine = JSON.parse(JSON.stringify(fullDefaultRoutine));
+        }
+
+        applyTheme(appData.activeTheme);
+        if (appData.snoopyMode) document.body.classList.add("theme-snoopy");
+
+        if (appData.name) {
+          if (appData.skipWelcome) {
+            enterAppSequence(true);
+          } else {
+            document.getElementById("welcome-new").classList.add("hidden");
+            document
+              .getElementById("welcome-returning")
+              .classList.remove("hidden");
+            document.getElementById(
+              "welcome-name-display"
+            ).innerText = `Olá, ${appData.name}`;
+            document.getElementById("welcome-avatar").src = appData.avatar;
+          }
+        } else {
+          document.getElementById("welcome-new").classList.remove("hidden");
+        }
+
+        calculateStatsAndLevel();
+        renderSubjectsInModal();
+
+        setInterval(() => {
+          updateClockAndRoutine();
+          if (document.visibilityState === "visible") gainXP(10, false);
+        }, 60000);
+        setInterval(updateClockAndRoutine, 1000);
+      };
+
+      function saveData() {
+        localStorage.setItem("portalData_v9", JSON.stringify(appData));
+        renderHeaderStats();
+      }
+
+      // --- LOADING AVANÇADO (FLUIDO COM PORCENTAGEM) ---
+      function animateLoadingBar(steps, callback) {
+        const overlay = document.getElementById("loading-overlay");
+        const bar = document.getElementById("loading-bar");
+        const text = document.getElementById("loading-text");
+        const percentText = document.getElementById("loading-percent");
+
+        overlay.classList.remove("hidden");
+        overlay.style.opacity = "1";
+        bar.style.width = "0%";
+        percentText.innerText = "0%";
+
+        let progress = 0;
+        let currentStepIndex = 0;
+
+        // Simula carregamento fluido com variações de velocidade
+        const interval = setInterval(() => {
+          // Incremento aleatório para simular "pensamento"
+          let increment = Math.random() * 2 + 0.5;
+
+          // Se tiver muito rápido, desacelera perto dos pontos de troca de texto
+          if (progress > 85) increment = 0.2;
+
+          progress += increment;
+          if (progress >= 100) progress = 100;
+
+          bar.style.width = `${progress}%`;
+          percentText.innerText = `${Math.floor(progress)}%`;
+
+          // Atualiza textos baseados no progresso
+          const stepThreshold = 100 / steps.length;
+          const targetIndex = Math.floor(progress / stepThreshold);
+
+          if (targetIndex < steps.length && targetIndex !== currentStepIndex) {
+            currentStepIndex = targetIndex;
+            text.innerText = steps[currentStepIndex] || steps[steps.length - 1];
+          }
+
+          if (progress >= 100) {
+            clearInterval(interval);
+            setTimeout(() => {
+              overlay.style.opacity = "0";
+              setTimeout(() => {
+                overlay.classList.add("hidden");
+                if (callback) callback();
+              }, 500);
+            }, 400);
+          }
+        }, 30); // 30ms para fluidez (~33fps)
+      }
+
+      function showLoadingLinear(steps, callback) {
+        // Wrapper para usar o novo sistema animado
+        animateLoadingBar(steps, callback);
+      }
+
+      function enterAppSequence(skip = false) {
+        if (skip) {
+          document.getElementById("welcome-screen").classList.add("hidden");
+          document.getElementById("app-container").classList.remove("hidden");
+          loadAppUI();
+          return;
+        }
+        const screen = document.getElementById("welcome-screen");
+        showLoadingLinear(
+          ["Autenticando...", "Carregando perfil...", "Organizando rotina..."],
+          () => {
+            screen.classList.add("slide-up-exit");
+            document.getElementById("app-container").classList.remove("hidden");
+            document.getElementById("app-container").classList.add("fade-in");
+            loadAppUI();
+            setTimeout(() => screen.classList.add("hidden"), 800);
+          }
+        );
+      }
+
+      function loadAppUI() {
+        document.getElementById("header-name").childNodes[0].nodeValue =
+          appData.name + " "; // Mantem o icone
+        document.getElementById("header-avatar").src = appData.avatar;
+        document.getElementById("settings-name").value = appData.name;
+        document.getElementById("settings-avatar-preview").src = appData.avatar;
+        document.getElementById("skip-welcome-chk").checked =
+          appData.skipWelcome;
+        document.getElementById("show-fire-chk").checked = appData.showFireIcon;
+
+        if (appData.snoopyMode)
+          document.getElementById("toggle-snoopy").classList.add("active");
+
+        renderFullRoutine();
+        renderFire();
+        renderReport(); // Popula Estatisticas
+        renderDecks();
+        renderAchievements(); // Popula Trofeus
+        renderHeaderStats();
+        updateThemeLocks();
+      }
+
+      function navigate(viewId) {
+        const currentActive = document.querySelector(".nav-btn.active");
+        if (currentActive) currentActive.classList.remove("active");
+        event.currentTarget.classList.add("active");
+
+        const currentView = document.querySelector(
+          ".view-section:not(.hidden)"
+        );
+        const targetView = document.getElementById(`view-${viewId}`);
+
+        if (currentView === targetView) return;
+
+        // Animação de saída
+        if (currentView) {
+          currentView.classList.remove("slide-up");
+          currentView.classList.add("hidden");
+        }
+
+        // Animação de entrada
+        targetView.classList.remove("hidden");
+        targetView.classList.add("slide-up");
+
+        // Se for view de troféus, reinicia animações
+        if (viewId === "trophies") {
+          filterAchievements(
+            currentAchFilter,
+            document.querySelector(
+              `.ach-filter-btn[onclick*="'${currentAchFilter}'"]`
+            )
+          );
+        }
+      }
+
+      function logout() {
+        saveData();
+        showLoadingLinear(["Salvando dados...", "Desconectando..."], () =>
+          location.reload()
+        );
+      }
+
+      function initNewUser() {
+        const name = document.getElementById("name-input").value;
+        if (!name) return alert("Por favor, digite um nome.");
+        appData.name = name;
+        appData.avatar = `https://api.dicebear.com/7.x/notionists/svg?seed=${name}`;
+        saveData();
+        enterAppSequence();
+      }
+      function randomizeAvatar() {
+        const randomSeed = "User" + Math.floor(Math.random() * 10000);
+        const url = `https://api.dicebear.com/7.x/notionists/svg?seed=${randomSeed}`;
+        appData.avatar = url;
+        document.getElementById("settings-avatar-preview").src = url;
+      }
+      function handleFileUpload(input) {
+        if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            appData.avatar = e.target.result;
+            document.getElementById("settings-avatar-preview").src =
+              appData.avatar;
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+      function saveSettings() {
+        appData.name = document.getElementById("settings-name").value;
+        saveData();
+        loadAppUI();
+        showToast("Configurações salvas!");
+      }
+      function toggleSkipWelcome() {
+        appData.skipWelcome =
+          document.getElementById("skip-welcome-chk").checked;
+        saveData();
+      }
+      function toggleHeaderFire() {
+        appData.showFireIcon = document.getElementById("show-fire-chk").checked;
+        renderHeaderStats();
+        saveData();
+      }
+
+      function updateClockAndRoutine() {
+        const now = new Date();
+        document.getElementById("clock").innerText = now.toLocaleTimeString(
+          "pt-BR",
+          { hour: "2-digit", minute: "2-digit" }
+        );
+        renderFireTimer(now);
+        const currentDay = now.getDay();
+        const currentMins = now.getHours() * 60 + now.getMinutes();
+        document.querySelectorAll(".routine-card").forEach((card) => {
+          card.classList.remove("active-now", "pulse", "past", "future");
+          const statusContainer = card.querySelector(".status-badge-container");
+          if (statusContainer) statusContainer.innerHTML = "";
+          if (!card.dataset.time || !card.dataset.day) return;
+          const cardDay = parseInt(card.dataset.day);
+          if (cardDay !== currentDay) {
+            card.classList.add("future");
+            return;
+          }
+          const times = card.dataset.time.split(" - ");
+          if (times.length === 2) {
+            const [sh, sm] = times[0].split(":").map(Number);
+            const [eh, em] = times[1].split(":").map(Number);
+            let start = sh * 60 + sm;
+            let end = eh * 60 + em;
+            let isOvernight = start > end;
+            let isActive = false;
+            let isPast = false;
+            if (isOvernight) {
+              if (currentMins >= start || currentMins < end) isActive = true;
+              else if (currentMins >= end && currentMins < start) isPast = true;
+            } else {
+              if (currentMins >= start && currentMins < end) isActive = true;
+              else if (currentMins >= end) isPast = true;
+            }
+            if (isActive) {
+              card.classList.add("active-now", "pulse");
+              statusContainer.innerHTML = `<span class="status-badge now">AGORA</span>`;
+            } else if (isPast) {
+              card.classList.add("past");
+              statusContainer.innerHTML = `<span class="status-badge done">CONCLUÍDO</span>`;
+            } else {
+              card.classList.add("future");
+            }
+          }
+        });
+      }
+
+      function renderFullRoutine() {
+        const container = document.getElementById("full-routine-list");
+        container.innerHTML = "";
+        const daysNames = [
+          "Domingo",
+          "Segunda",
+          "Terça",
+          "Quarta",
+          "Quinta",
+          "Sexta",
+          "Sábado",
+        ];
+        const now = new Date();
+        const todayIndex = now.getDay();
+        const currentMins = now.getHours() * 60 + now.getMinutes();
+
+        if (isEditMode) {
+          document.body.classList.add("edit-mode");
+          document.getElementById("btn-edit-toggle").classList.add("editing");
+          document.getElementById(
+            "btn-edit-toggle"
+          ).innerHTML = `<i class="fas fa-check"></i> Concluir`;
+        } else {
+          document.body.classList.remove("edit-mode");
+          document
+            .getElementById("btn-edit-toggle")
+            .classList.remove("editing");
+          document.getElementById(
+            "btn-edit-toggle"
+          ).innerHTML = `<i class="fas fa-pencil-alt"></i> Editar`;
+        }
+
+        let order = [];
+        for (let i = 0; i < 7; i++) order.push((todayIndex + i) % 7);
+
+        order.forEach((dayIdx) => {
+          const isToday = dayIdx === todayIndex;
+          const div = document.createElement("div");
+          div.className = `day-group ${isToday ? "today" : ""}`;
+          let tasks = appData.routine[dayIdx] || [];
+
+          tasks.sort((a, b) => {
+            const getTaskState = (t) => {
+              if (!isToday) return 0;
+              const [sh, sm] = t.time.split(" - ")[0].split(":").map(Number);
+              const [eh, em] = t.time.split(" - ")[1].split(":").map(Number);
+              let end = eh * 60 + em;
+              return currentMins >= end ? 1 : 0;
+            };
+            const stateA = getTaskState(a);
+            const stateB = getTaskState(b);
+            if (stateA !== stateB) return stateA - stateB;
+            return a.time.localeCompare(b.time);
+          });
+
+          let tasksHtml = "";
+          if (tasks.length === 0) {
+            tasksHtml = `<div style="padding:10px; color:var(--text-muted); font-size:0.8rem; font-style:italic;">Sem atividades.</div>`;
+          } else {
+            tasks.forEach((task, idx) => {
+              const originalIdx = appData.routine[dayIdx].indexOf(task);
+              tasksHtml += `
+                <div class="routine-card" data-day="${dayIdx}" data-time="${task.time}">
+                    <div class="time-pill">${task.time}</div>
+                    <div style="flex:1">
+                        <h3 style="font-size:1rem; font-weight:600; display:flex; align-items:center; flex-wrap:wrap;">
+                          ${task.title}
+                          <span class="status-badge-container"></span>
+                        </h3>
+                    </div>
+                    <span style="font-size:1.5rem;">${task.icon}</span>
+                    <div class="edit-controls">
+                        <button class="btn-edit-action edit" onclick="openTaskModal(${dayIdx}, ${originalIdx})" title="Editar"><i class="fas fa-pencil-alt"></i></button>
+                        <button class="btn-edit-action delete" onclick="deleteTask(${dayIdx}, ${originalIdx})" title="Apagar"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>`;
+            });
+          }
+          div.innerHTML = `<div class="day-header"><h2>${
+            daysNames[dayIdx]
+          }</h2>${
+            isToday ? '<span class="today-badge">HOJE</span>' : ""
+          }</div><div class="routine-list">${tasksHtml}<button class="add-task-btn" onclick="openTaskModal(${dayIdx}, -1)"><i class="fas fa-plus"></i> Adicionar Atividade</button></div>`;
+          container.appendChild(div);
+        });
+        updateClockAndRoutine();
+      }
+
+      function toggleEditRoutine() {
+        isEditMode = !isEditMode;
+        renderFullRoutine();
+      }
+      function openTaskModal(dayIdx, taskIdx) {
+        document.getElementById("task-original-day-idx").value = dayIdx;
+        document.getElementById("task-idx").value = taskIdx;
+        document.getElementById("task-day-select").value = dayIdx;
+        if (taskIdx >= 0) {
+          const task = appData.routine[dayIdx][taskIdx];
+          const times = task.time.split(" - ");
+          document.getElementById("task-start").value = times[0];
+          document.getElementById("task-end").value = times[1];
+          document.getElementById("task-title").value = task.title;
+          document.getElementById("task-icon").value = task.icon;
+          document.getElementById("task-modal-title").innerText =
+            "Editar Atividade";
+        } else {
+          document.getElementById("task-start").value = "";
+          document.getElementById("task-end").value = "";
+          document.getElementById("task-title").value = "";
+          document.getElementById("task-icon").value = "📌";
+          document.getElementById("task-modal-title").innerText =
+            "Nova Atividade";
+        }
+        document.getElementById("task-modal").classList.add("open");
+      }
+      function saveTask() {
+        const originalDayIdx = document.getElementById(
+          "task-original-day-idx"
+        ).value;
+        const newDayIdx = document.getElementById("task-day-select").value;
+        const taskIdx = parseInt(document.getElementById("task-idx").value);
+        const start = document.getElementById("task-start").value;
+        const end = document.getElementById("task-end").value;
+        const title = document.getElementById("task-title").value;
+        const icon = document.getElementById("task-icon").value || "📌";
+        if (!start || !end || !title)
+          return alert("Preencha horário e título.");
+        const newTask = { time: `${start} - ${end}`, title: title, icon: icon };
+        if (!appData.routine[newDayIdx]) appData.routine[newDayIdx] = [];
+        if (taskIdx >= 0 && originalDayIdx === newDayIdx) {
+          appData.routine[originalDayIdx][taskIdx] = newTask;
+        } else {
+          if (taskIdx >= 0) appData.routine[originalDayIdx].splice(taskIdx, 1);
+          appData.routine[newDayIdx].push(newTask);
+        }
+        saveData();
+        document.getElementById("task-modal").classList.remove("open");
+        renderFullRoutine();
+      }
+      function deleteTask(dayIdx, taskIdx) {
+        if (confirm("Apagar tarefa?")) {
+          appData.routine[dayIdx].splice(taskIdx, 1);
+          saveData();
+          renderFullRoutine();
+        }
+      }
+
+      function setStatsFilter(filter, btn) {
+        currentStatsFilter = filter;
+        document
+          .querySelectorAll("#view-stats .stats-filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Animação de troca
+        const box = document.getElementById("stats-summary-box");
+        box.classList.remove("fade-in");
+        box.classList.add("fade-out");
+
+        setTimeout(() => {
+          renderReport();
+          box.classList.remove("fade-out");
+          box.classList.add("fade-in");
+        }, 300);
+      }
+
+      function renderReport() {
+        const now = new Date();
+        const startOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        ).getTime();
+        const startOfWeek = startOfDay - 7 * 24 * 60 * 60 * 1000;
+        const startOfMonth = startOfDay - 30 * 24 * 60 * 60 * 1000;
+        let tQ = 0,
+          tC = 0,
+          subData = {};
+
+        appData.history.forEach((h) => {
+          const hDate = new Date(h.date + "T00:00:00").getTime();
+          let include = false;
+          if (currentStatsFilter === "global") include = true;
+          else if (currentStatsFilter === "today" && hDate === startOfDay)
+            include = true;
+          else if (currentStatsFilter === "week" && hDate >= startOfWeek)
+            include = true;
+          else if (currentStatsFilter === "month" && hDate >= startOfMonth)
+            include = true;
+
+          if (include && h.details) {
+            h.details.forEach((d) => {
+              tQ += d.total;
+              tC += d.correct;
+              if (!subData[d.subject]) subData[d.subject] = { t: 0, c: 0 };
+              subData[d.subject].t += d.total;
+              subData[d.subject].c += d.correct;
+            });
+          }
+        });
+
+        document.getElementById("total-questions").innerText = tQ;
+        document.getElementById("total-correct").innerText = tC;
+        document.getElementById("total-wrong").innerText = tQ - tC;
+
+        const div = document.getElementById("subject-breakdown");
+        div.innerHTML = "";
+        if (Object.keys(subData).length === 0) {
+          div.innerHTML =
+            "<p style='text-align:center; color:var(--text-muted); font-size:0.8rem;'>Nenhum dado neste período.</p>";
+          return;
+        }
+
+        Object.keys(subData).forEach((s) => {
+          const d = subData[s];
+          const pct = d.t > 0 ? Math.round((d.c / d.t) * 100) : 0;
+          div.innerHTML += `
+            <div class="subject-progress-card" onclick="openSubjectDetail('${s}')">
+                <div class="prog-icon">${s.charAt(0)}</div>
+                <div class="prog-info">
+                    <div class="prog-header"><span>${s}</span><span>${pct}%</span></div>
+                    <div class="prog-bar-bg"><div class="prog-bar-fill" style="width:${pct}%"></div></div>
+                    <div class="prog-stats-mini"><span>${d.c}/${
+            d.t
+          } acertos</span><span>Ver detalhes</span></div>
+                </div>
+            </div>`;
+        });
+      }
+
+      // --- LOGICA DETALHES MATERIA (MODAL COM ABAS) ---
+      function openSubjectDetail(subject) {
+        currentSubjectDetail = subject;
+        // Reseta para padrão
+        switchSubjectTab("assert");
+        // Simula click no filtro global para resetar
+        const globalBtn = document.querySelector(
+          "#subject-detail-modal .stats-filter-container button:last-child"
+        );
+        filterSubjectDetail("global", globalBtn);
+
+        document.getElementById("detail-subject-title").innerText = subject;
+        document.getElementById("subject-detail-modal").classList.add("open");
+      }
+
+      function switchSubjectTab(tab) {
+        currentSubjectTab = tab;
+        document
+          .querySelectorAll(".sub-nav-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(`btn-tab-${tab}`).classList.add("active");
+
+        const assertContent = document.getElementById("tab-assert-content");
+        const questContent = document.getElementById("tab-quest-content");
+
+        if (tab === "assert") {
+          questContent.classList.add("hidden");
+          assertContent.classList.remove("hidden");
+          assertContent.classList.add("fade-in");
+        } else {
+          assertContent.classList.add("hidden");
+          questContent.classList.remove("hidden");
+          questContent.classList.add("fade-in");
+        }
+        // Recalcula dados com base no filtro atual
+        updateSubjectDetailData();
+      }
+
+      function filterSubjectDetail(filter, btn) {
+        currentSubjectFilter = filter;
+        document
+          .querySelectorAll("#subject-detail-modal .stats-filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // Pequena animação no conteúdo
+        const activeContent =
+          currentSubjectTab === "assert"
+            ? document.getElementById("tab-assert-content")
+            : document.getElementById("tab-quest-content");
+        activeContent.classList.remove("fade-in");
+        void activeContent.offsetWidth; // trigger reflow
+        activeContent.classList.add("fade-in");
+
+        updateSubjectDetailData();
+      }
+
+      function updateSubjectDetailData() {
+        if (!currentSubjectDetail) return;
+        const now = new Date();
+        const startOfDay = new Date(
+          now.getFullYear(),
+          now.getMonth(),
+          now.getDate()
+        ).getTime();
+        const startOfWeek = startOfDay - 7 * 24 * 60 * 60 * 1000;
+        const startOfMonth = startOfDay - 30 * 24 * 60 * 60 * 1000;
+
+        let t = 0,
+          c = 0;
+
+        appData.history.forEach((h) => {
+          const hDate = new Date(h.date + "T00:00:00").getTime();
+          let include = false;
+          if (currentSubjectFilter === "global") include = true;
+          else if (currentSubjectFilter === "today" && hDate === startOfDay)
+            include = true;
+          else if (currentSubjectFilter === "week" && hDate >= startOfWeek)
+            include = true;
+          else if (currentSubjectFilter === "month" && hDate >= startOfMonth)
+            include = true;
+
+          if (include && h.details) {
+            h.details.forEach((d) => {
+              if (d.subject === currentSubjectDetail) {
+                t += d.total;
+                c += d.correct;
+              }
+            });
+          }
+        });
+
+        const w = t - c;
+        const pct = t > 0 ? Math.round((c / t) * 100) : 0;
+
+        // Atualiza Aba Assertividade
+        document.getElementById("detail-pct").innerText = `${pct}%`;
+        document.getElementById("detail-bar-c").style.width = `${pct}%`;
+        document.getElementById("detail-bar-w").style.width = `${100 - pct}%`;
+
+        // Atualiza Aba Questões
+        document.getElementById("q-total").innerText = t;
+        document.getElementById("q-correct").innerText = c;
+        document.getElementById("q-wrong").innerText = w;
+      }
+
+      function renderSubjectsInModal() {
+        const container = document.getElementById("subject-list-container");
+        container.innerHTML = "";
+        const fullList = [...ALL_SUBJECTS, ...appData.customSubjects];
+        fullList.forEach((sub) => {
+          const label = document.createElement("label");
+          label.className = "subject-check-item";
+          label.innerHTML = `<input type="checkbox" value="${sub}" onchange="updateDynamicForms()" /> <span style="font-weight:500">${sub}</span>`;
+          container.appendChild(label);
+        });
+        const addBtn = document.createElement("div");
+        addBtn.className = "subject-check-item add-new";
+        addBtn.innerHTML = `<span><i class="fas fa-plus"></i> Criar Matéria</span>`;
+        addBtn.onclick = promptForCustomSubject;
+        container.appendChild(addBtn);
+      }
+      function promptForCustomSubject() {
+        const name = prompt("Nome da nova matéria:");
+        if (name && name.trim() !== "") {
+          const cleanName = name.trim();
+          if (
+            !appData.customSubjects.includes(cleanName) &&
+            !ALL_SUBJECTS.includes(cleanName)
+          ) {
+            appData.customSubjects.push(cleanName);
+            saveData();
+            renderSubjectsInModal();
+            filterSubjects();
+          } else {
+            alert("Matéria já existe!");
+          }
+        }
+      }
+      function filterSubjects() {
+        const term = document
+          .getElementById("subject-search")
+          .value.toLowerCase();
+        const items = document.querySelectorAll(
+          ".subject-check-item:not(.add-new)"
+        );
+        items.forEach((item) => {
+          const text = item.innerText.toLowerCase();
+          if (text.includes(term)) item.classList.remove("hidden");
+          else item.classList.add("hidden");
+        });
+      }
+      function openRegisterModal() {
+        isEditingLog = false;
+        const today = new Date().toISOString().split("T")[0];
+        if (appData.history.some((h) => h.date === today))
+          return alert("Já registrado hoje!");
+        document.getElementById("register-modal-title").innerText =
+          "Registro Diário";
+        document.getElementById("register-modal").classList.add("open");
+        selectType(null);
+        document
+          .querySelectorAll(".subject-check-item input")
+          .forEach((i) => (i.checked = false));
+        document.getElementById("dynamic-inputs-container").innerHTML = "";
+        document.getElementById("opt-rest").style.pointerEvents = "auto";
+        document.getElementById("opt-rest").style.opacity = "1";
+        document.getElementById("opt-fail").style.pointerEvents = "auto";
+        document.getElementById("opt-fail").style.opacity = "1";
+      }
+      function openEditLog() {
+        const today = new Date().toISOString().split("T")[0];
+        const log = appData.history.find((h) => h.date === today);
+        if (!log) return alert("Nenhum registro encontrado para hoje.");
+        if (log.type !== "focus")
+          return alert("Apenas dias de foco podem ser editados.");
+        isEditingLog = true;
+        document.getElementById("register-modal-title").innerText =
+          "Editar Atividades de Hoje";
+        document.getElementById("register-modal").classList.add("open");
+        selectType("focus");
+        document.getElementById("opt-rest").style.pointerEvents = "none";
+        document.getElementById("opt-rest").style.opacity = "0.3";
+        document.getElementById("opt-fail").style.pointerEvents = "none";
+        document.getElementById("opt-fail").style.opacity = "0.3";
+        document
+          .querySelectorAll(".subject-check-item input")
+          .forEach((i) => (i.checked = false));
+        const details = log.details || [];
+        details.forEach((d) => {
+          const chk = document.querySelector(
+            `.subject-check-item input[value="${d.subject}"]`
+          );
+          if (chk) chk.checked = true;
+        });
+        updateDynamicForms();
+        setTimeout(() => {
+          details.forEach((d) => {
+            const row = document.querySelector(
+              `.dynamic-inputs .inp-total[data-subject="${d.subject}"]`
+            );
+            if (row) {
+              row.value = d.total;
+              const parent = row.closest(".dynamic-inputs");
+              const correctInp = parent.querySelector(".inp-correct");
+              if (correctInp) correctInp.value = d.correct;
+            }
+          });
+        }, 50);
+      }
+      function closeRegisterModal() {
+        document.getElementById("register-modal").classList.remove("open");
+      }
+      let selectedType = null;
+      function selectType(type) {
+        selectedType = type;
+        document
+          .querySelectorAll(".option-btn")
+          .forEach((b) => b.classList.remove("selected"));
+        document.getElementById("form-focus").classList.add("hidden");
+        if (type) {
+          document.getElementById(`opt-${type}`).classList.add("selected");
+          if (type === "focus")
+            document.getElementById("form-focus").classList.remove("hidden");
+        }
+      }
+      function updateDynamicForms() {
+        const container = document.getElementById("dynamic-inputs-container");
+        const currentValues = {};
+        container.querySelectorAll(".dynamic-inputs").forEach((div) => {
+          const sub = div.querySelector(".inp-total").dataset.subject;
+          const tot = div.querySelector(".inp-total").value;
+          const cor = div.querySelector(".inp-correct").value;
+          currentValues[sub] = { tot, cor };
+        });
+        container.innerHTML = "";
+        document
+          .querySelectorAll(".subject-check-item input:checked")
+          .forEach((chk) => {
+            const div = document.createElement("div");
+            div.className = "dynamic-inputs";
+            const prev = currentValues[chk.value] || { tot: "", cor: "" };
+            div.innerHTML = `<div style="font-weight:600; color:var(--primary); margin-bottom:5px;">${chk.value}</div>
+            <div class="input-row">
+                <div class="input-mini"><label style="font-size:0.8rem">Questões</label><input type="number" class="form-input inp-total" data-subject="${chk.value}" value="${prev.tot}"></div>
+                <div class="input-mini"><label style="font-size:0.8rem">Acertos</label><input type="number" class="form-input inp-correct" value="${prev.cor}"></div>
+            </div>`;
+            container.appendChild(div);
+          });
+      }
+      function submitDayLog() {
+        if (!selectedType) return alert("Selecione uma opção!");
+        closeRegisterModal();
+        const today = new Date().toISOString().split("T")[0];
+        let details = [];
+        if (selectedType === "focus") {
+          document.querySelectorAll(".dynamic-inputs").forEach((d) => {
+            details.push({
+              subject: d.querySelector(".inp-total").dataset.subject,
+              total: parseInt(d.querySelector(".inp-total").value) || 0,
+              correct: parseInt(d.querySelector(".inp-correct").value) || 0,
+            });
+          });
+        }
+        if (isEditingLog) {
+          showLoadingLinear(
+            ["Salvando alterações...", "Recalculando estatísticas..."],
+            () => {
+              const idx = appData.history.findIndex((h) => h.date === today);
+              if (idx > -1) {
+                appData.history[idx].details = details;
+                saveData();
+                renderReport();
+                showToast("Atividades atualizadas com sucesso!");
+              }
+            }
+          );
+          return;
+        }
+        showLoadingLinear(
+          [
+            "Salvando progresso...",
+            "Calculando XP...",
+            "Atualizando gráficos...",
+          ],
+          () => {
+            appData.history = appData.history.filter((h) => h.date !== today);
+            if (selectedType === "focus") {
+              appData.streak++;
+              gainXP(150);
+              showSnoopyReaction("happy");
+              confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            } else if (selectedType === "rest") {
+              gainXP(50);
+              showSnoopyReaction("sleep");
+            } else if (selectedType === "fail") {
+              appData.streak = 0;
+              showSnoopyReaction("sad");
+            }
+            appData.history.push({ date: today, type: selectedType, details });
+            saveData();
+            renderFire();
+            renderReport();
+            renderAchievements(); // update achievements with new activity
+          }
+        );
+      }
+      function undoLastAction() {
+        if (confirm("Desfazer registro de hoje?")) {
+          const today = new Date().toISOString().split("T")[0];
+          const idx = appData.history.findIndex((h) => h.date === today);
+          if (idx > -1) {
+            const item = appData.history[idx];
+            if (item.type === "focus" && appData.streak > 0) appData.streak--;
+            appData.history.splice(idx, 1);
+            saveData();
+            renderFire();
+            renderReport();
+            renderAchievements();
+            document
+              .getElementById("fire-timer-display")
+              .classList.add("hidden");
+          }
+        }
+      }
+      function gainXP(amount, notify = true) {
+        const oldLevel = appData.level;
+        appData.xp += amount;
+        calculateStatsAndLevel();
+        if (appData.level > oldLevel) {
+          showToast(`🎉 Subiu para o Nível ${appData.level}!`);
+          showSnoopyReaction("smart");
+          updateThemeLocks();
+        } else if (notify && amount > 0) {
+          showToast(`+${amount} XP`);
+        }
+        renderHeaderStats();
+        saveData();
+      }
+      function calculateStatsAndLevel() {
+        appData.level = Math.floor(Math.sqrt(appData.xp / 100)) + 1;
+      }
+      function renderHeaderStats() {
+        const lvl = appData.level;
+        document.getElementById("lvl-num").innerText = lvl;
+
+        // Novo título "Premium" ao invés dos níveis antigos
+        let title = "Premium";
+        document.getElementById("header-title").innerText = title;
+
+        // Barra de XP
+        const currentLevelBaseXP = 100 * Math.pow(lvl - 1, 2);
+        const nextLevelXP = 100 * Math.pow(lvl, 2);
+        const range = nextLevelXP - currentLevelBaseXP;
+        const progress = Math.max(0, appData.xp - currentLevelBaseXP);
+        const pct = range > 0 ? Math.min(100, (progress / range) * 100) : 0;
+        document.getElementById("xp-bar").style.width = `${pct}%`;
+        document.getElementById("xp-fraction").innerText = `${Math.floor(
+          progress
+        )} / ${range} XP`;
+
+        // Avatar Ring
+        const av = document.getElementById("header-avatar");
+        av.className = "avatar";
+        if (lvl >= 40) av.classList.add("lvl-40");
+        else if (lvl >= 30) av.classList.add("lvl-30");
+        else if (lvl >= 20) av.classList.add("lvl-20");
+        else if (lvl >= 10) av.classList.add("lvl-10");
+        else if (lvl >= 5) av.classList.add("lvl-5");
+        else av.classList.add("lvl-1");
+
+        // Recorde no Header (Foguinho)
+        const fireBadge = document.getElementById("header-fire-badge");
+        if (appData.showFireIcon) {
+          fireBadge.classList.remove("hidden");
+          // Calcular recorde
+          let maxStreak = 0;
+          let currentS = 0;
+          appData.history.forEach((h) => {
+            if (h.type === "focus") currentS++;
+            else currentS = 0;
+            if (currentS > maxStreak) maxStreak = currentS;
+          });
+          const finalRecord = Math.max(maxStreak, appData.streak);
+          document.getElementById("header-fire-score").innerText = finalRecord;
+        } else {
+          fireBadge.classList.add("hidden");
+        }
+      }
+      function renderFire() {
+        document.getElementById("streak-count").innerText = appData.streak;
+        const grid = document.getElementById("heatmap");
+        grid.innerHTML = "";
+        const historyMap = {};
+        appData.history.forEach((h) => (historyMap[h.date] = h.type));
+        for (let i = 364; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(new Date().getDate() - i);
+          const dateStr = d.toISOString().split("T")[0];
+          const status = historyMap[dateStr] || "empty";
+          const div = document.createElement("div");
+          div.className = `day-box ${
+            status === "focus"
+              ? "done"
+              : status === "rest"
+              ? "rest"
+              : status === "fail"
+              ? "fail"
+              : ""
+          }`;
+          grid.appendChild(div);
+        }
+        const c = document.querySelector(".heatmap-container");
+        c.scrollLeft = c.scrollWidth;
+        const today = new Date().toISOString().split("T")[0];
+        const hasRegistered = appData.history.some((h) => h.date === today);
+        const registeredType = hasRegistered
+          ? appData.history.find((h) => h.date === today).type
+          : null;
+        if (hasRegistered) {
+          document.getElementById("btn-register-today").classList.add("hidden");
+          if (registeredType === "focus") {
+            document.getElementById("btn-edit-log").classList.remove("hidden");
+          } else {
+            document.getElementById("btn-edit-log").classList.add("hidden");
+          }
+        } else {
+          document
+            .getElementById("btn-register-today")
+            .classList.remove("hidden");
+          document.getElementById("btn-edit-log").classList.add("hidden");
+        }
+      }
+      function renderFireTimer(now) {
+        const timerDisplay = document.getElementById("fire-timer-display");
+        const today = now.toISOString().split("T")[0];
+        const hasRegistered = appData.history.some((h) => h.date === today);
+        if (hasRegistered) {
+          timerDisplay.classList.remove("hidden");
+          const tomorrow = new Date(now);
+          tomorrow.setDate(tomorrow.getDate() + 1);
+          tomorrow.setHours(0, 0, 0, 0);
+          const diff = tomorrow - now;
+          const h = Math.floor(diff / (1000 * 60 * 60));
+          const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          timerDisplay.innerText = `Próximo: ${String(h).padStart(
+            2,
+            "0"
+          )}:${String(m).padStart(2, "0")}`;
+        } else {
+          timerDisplay.classList.add("hidden");
+        }
+      }
+
+      function filterAchievements(filter, btn) {
+        currentAchFilter = filter;
+        document
+          .querySelectorAll("#view-trophies .ach-filter-btn")
+          .forEach((b) => b.classList.remove("active"));
+        if (btn) btn.classList.add("active");
+
+        renderAchievements();
+      }
+
+      function renderAchievements() {
+        const container = document.getElementById("achievements-container");
+        container.innerHTML = "";
+        const categories = ["Foco", "Nível", "Atividades"];
+        let totalComp = 0,
+          focusComp = 0,
+          lvlComp = 0;
+
+        function getAchievementProgress(achId) {
+          const ach = achievementsData.find((a) => a.id === achId);
+          if (!ach) return 0;
+          let current = 0;
+          if (ach.cat === "Nível") current = appData.level;
+          if (ach.cat === "Foco") current = appData.streak;
+          if (ach.cat === "Atividades") {
+            if (ach.sub) {
+              appData.history.forEach((h) => {
+                if (h.details)
+                  h.details.forEach((d) => {
+                    if (d.subject === ach.sub) current += d.total;
+                  });
+              });
+            } else {
+              appData.history.forEach((h) => {
+                if (h.details)
+                  h.details.forEach((d) => {
+                    current += d.total;
+                  });
+              });
+            }
+          }
+          return Math.min(current, ach.target);
+        }
+
+        let animationDelayCounter = 0;
+
+        categories.forEach((cat) => {
+          // Filtragem
+          let catAchs = achievementsData.filter((a) => a.cat === cat);
+          if (currentAchFilter !== "all") {
+            catAchs = catAchs.filter((a) => a.diff === currentAchFilter);
+          }
+
+          if (catAchs.length === 0) return;
+
+          // Contagem (sempre baseada no total global para stats)
+          const allCatAchs = achievementsData.filter((a) => a.cat === cat);
+          const completedCount = allCatAchs.filter(
+            (a) => getAchievementProgress(a.id) >= a.target
+          ).length;
+
+          if (cat === "Foco") focusComp = completedCount;
+          if (cat === "Nível") lvlComp = completedCount;
+          totalComp += completedCount;
+
+          const section = document.createElement("div");
+          let listHTML = `<div class="ach-list">`;
+          catAchs.forEach((ach) => {
+            const current = getAchievementProgress(ach.id);
+            const isDone = current >= ach.target;
+            const pct = Math.round((current / ach.target) * 100);
+            const diffClass =
+              ach.diff === "imp"
+                ? "diff-imp"
+                : ach.diff === "hard"
+                ? "diff-hard"
+                : ach.diff === "med"
+                ? "diff-med"
+                : "diff-easy";
+
+            // Animação escalonada
+            const delay = animationDelayCounter * 0.05;
+            animationDelayCounter++;
+
+            listHTML += `
+            <div class="ach-card ${
+              isDone ? "completed" : ""
+            } stagger-item" style="animation-delay: ${delay}s">
+                <div class="ach-icon">${ach.icon}</div>
+                <div class="ach-content">
+                    <div class="ach-name">${
+                      ach.title
+                    } <span class="difficulty-badge ${diffClass}">${
+              ach.diff
+            }</span></div>
+                    <div class="ach-desc blur" onclick="this.classList.remove('blur')">${
+                      ach.desc
+                    }</div>
+                    <div class="ach-progress-bar-bg"><div class="ach-progress-bar-fill" style="width:${pct}%"></div></div>
+                    <div class="ach-status"><span>${
+                      isDone ? "Completo" : "Andamento"
+                    }</span><span>${current}/${ach.target}</span></div>
+                </div>
+            </div>`;
+          });
+          listHTML += `</div>`;
+          section.innerHTML = `<div class="ach-cat-title stagger-item" style="animation-delay: ${
+            (animationDelayCounter - catAchs.length) * 0.05
+          }s">${cat}</div>${listHTML}`;
+          container.appendChild(section);
+        });
+
+        // Atualiza Stats (sempre baseado no total, independente do filtro visual)
+        document.getElementById("stat-ach-focus").innerText = focusComp;
+        const totalLvlAchs = achievementsData.filter(
+          (a) => a.cat === "Nível"
+        ).length;
+        document.getElementById("stat-ach-lvl").innerText =
+          totalLvlAchs > 0
+            ? `${Math.round((lvlComp / totalLvlAchs) * 100)}%`
+            : "0%";
+        document.getElementById("stat-ach-total").innerText = totalComp;
+      }
+
+      // Flashcards
+      function renderDecks() {
+        const container = document.getElementById("decks-container");
+        container.innerHTML = `<div class="deck-card add-deck-card" onclick="document.getElementById('deck-modal').classList.add('open')"><i class="fas fa-plus" style="font-size:2rem; margin-bottom:10px;"></i><span>Criar Baralho</span></div>`;
+        appData.flashcards.forEach((deck) => {
+          const el = document.createElement("div");
+          const isReview = deck.isReview ? "review-mode" : "";
+          el.className = `deck-card ${isReview}`;
+          el.innerHTML = `<div class="deck-actions"><button class="deck-btn" onclick="addCardToDeck(${deck.id}, event)"><i class="fas fa-plus-circle"></i></button><button class="deck-btn del" onclick="deleteDeck(${deck.id}, event)"><i class="fas fa-trash"></i></button></div><span class="deck-emoji">${deck.emoji}</span><div class="deck-title">${deck.title}</div><div class="deck-count">${deck.cards.length} cartas</div>`;
+          el.onclick = (e) => {
+            if (!e.target.closest("button")) startStudy(deck.id);
+          };
+          container.appendChild(el);
+        });
+      }
+      function saveDeck() {
+        const name = document.getElementById("deck-name").value;
+        const emoji = document.getElementById("deck-emoji").value || "📚";
+        if (name) {
+          appData.flashcards.push({
+            id: Date.now(),
+            title: name,
+            emoji: emoji,
+            cards: [],
+          });
+          saveData();
+          renderDecks();
+          document.getElementById("deck-modal").classList.remove("open");
+        }
+      }
+      function deleteDeck(id, e) {
+        e.stopPropagation();
+        if (confirm("Excluir?")) {
+          appData.flashcards = appData.flashcards.filter((d) => d.id !== id);
+          saveData();
+          renderDecks();
+        }
+      }
+      let currentDeckId = null;
+      function addCardToDeck(id, e) {
+        e.stopPropagation();
+        currentDeckId = id;
+        document.getElementById("new-card-q").value = "";
+        document.getElementById("new-card-a").value = "";
+        document.getElementById("add-card-modal").classList.add("open");
+      }
+      function saveNewCard() {
+        const q = document.getElementById("new-card-q").value;
+        const a = document.getElementById("new-card-a").value;
+        if (q && a) {
+          const deck = appData.flashcards.find((d) => d.id === currentDeckId);
+          if (deck) deck.cards.push({ id: Date.now(), q, a });
+          saveData();
+          renderDecks();
+          document.getElementById("add-card-modal").classList.remove("open");
+        }
+      }
+
+      // --- LOGICA FLASHCARD RESTAURADA (Review in session) ---
+      let studyQueue = [],
+        currentCardIndex = 0,
+        isFlipped = false,
+        sessionWrongCards = [];
+
+      function startStudy(deckId) {
+        const deck = appData.flashcards.find((d) => d.id === deckId);
+        if (deck.cards.length === 0) return alert("Baralho vazio!");
+        studyQueue = [...deck.cards];
+        // Embaralhar levemente
+        studyQueue.sort(() => Math.random() - 0.5);
+
+        sessionWrongCards = [];
+        currentDeckId = deckId;
+        currentCardIndex = 0;
+        isFlipped = false;
+        document.getElementById("study-modal").classList.add("open");
+        renderStudyCard();
+      }
+
+      function closeStudyModal() {
+        document.getElementById("study-modal").classList.remove("open");
+      }
+
+      function renderStudyCard() {
+        const container = document.getElementById("study-area-content");
+        if (currentCardIndex >= studyQueue.length) {
+          // Fim do Baralho
+          let resultHtml = "";
+
+          if (sessionWrongCards.length > 0) {
+            resultHtml = `
+              <p style="color:var(--error); margin-bottom:15px; font-weight:600;">Você errou ${sessionWrongCards.length} cartas.</p>
+              <button class="btn-register" onclick="restartWithErrors()" style="width:100%; margin-bottom:10px;">Revisar Erros Agora</button>
+              <button class="btn-undo" onclick="closeStudyModal()" style="width:100%;">Fechar</button>
+              `;
+          } else {
+            resultHtml = `
+              <p style="color:var(--success); margin-bottom:15px; font-weight:600;">Perfeito! Sem erros.</p>
+              <button class="btn-undo" onclick="closeStudyModal()" style="width:100%;">Fechar</button>
+              `;
+          }
+
+          container.innerHTML = `
+            <div class="deck-end-screen">
+                <h2 style="margin-bottom:10px;">Fim do Baralho 🎉</h2>
+                <p style="margin-bottom:20px;">${studyQueue.length} revisados.</p>
+                ${resultHtml}
+            </div>`;
+
+          if (sessionWrongCards.length === 0) {
+            confetti();
+            gainXP(50);
+            showSnoopyReaction("smart");
+          }
+          return;
+        }
+
+        const card = studyQueue[currentCardIndex];
+        container.innerHTML = `
+        <div class="study-container">
+            <div class="flashcard-3d ${
+              isFlipped ? "flipped" : ""
+            }" onclick="isFlipped=!isFlipped; this.classList.toggle('flipped')">
+                <div class="card-face front">
+                    <div class="card-sub" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Pergunta</div>
+                    <div class="card-text">${card.q}</div>
+                </div>
+                <div class="card-face back">
+                    <div class="card-sub" style="font-size:0.8rem; color:var(--text-muted); margin-bottom:10px;">Resposta</div>
+                    <div class="card-text">${card.a}</div>
+                </div>
+            </div>
+        </div>
+        <div class="study-controls">
+            <button class="btn-study btn-wrong" onclick="nextCard('wrong')"><i class="fas fa-times"></i></button>
+            <button class="btn-study btn-correct" onclick="nextCard('correct')"><i class="fas fa-check"></i></button>
+        </div>`;
+      }
+
+      function nextCard(res) {
+        if (res === "wrong") {
+          // Guarda a carta completa para revisao imediata
+          sessionWrongCards.push(studyQueue[currentCardIndex]);
+        }
+        currentCardIndex++;
+        isFlipped = false;
+        renderStudyCard();
+      }
+
+      function restartWithErrors() {
+        if (sessionWrongCards.length === 0) return;
+        studyQueue = [...sessionWrongCards];
+        sessionWrongCards = []; // Zera para a nova rodada
+        currentCardIndex = 0;
+        isFlipped = false;
+        renderStudyCard();
+      }
+
+      // --- PERFIL OTIMIZADO ---
+      function openProfileMenu() {
+        // Popula Modal
+        document.getElementById("profile-modal-avatar").src = appData.avatar;
+        document.getElementById("profile-modal-name").innerText = appData.name;
+        document.getElementById("prof-msg-name").innerText = appData.name;
+
+        // Título fixo Premium
+        document.getElementById("profile-modal-title").innerText = "Premium";
+
+        // Classe do avatar
+        const lvl = appData.level;
+        const av = document.getElementById("profile-modal-avatar");
+        av.className = "avatar";
+        if (lvl >= 40) av.classList.add("lvl-40");
+        else if (lvl >= 30) av.classList.add("lvl-30");
+        else if (lvl >= 20) av.classList.add("lvl-20");
+        else if (lvl >= 10) av.classList.add("lvl-10");
+        else if (lvl >= 5) av.classList.add("lvl-5");
+        else av.classList.add("lvl-1");
+
+        // Recorde (Combinado)
+        let maxStreak = 0;
+        let currentS = 0;
+        appData.history.forEach((h) => {
+          if (h.type === "focus") currentS++;
+          else currentS = 0;
+          if (currentS > maxStreak) maxStreak = currentS;
+        });
+        // Se a atual for maior que o histórico calculado, use a atual
+        const finalRecord = Math.max(maxStreak, appData.streak);
+        document.getElementById("prof-max-streak").innerText = finalRecord;
+
+        // Total Questões Combinado (Flashcards + Questões)
+        let totalQ = 0;
+        appData.history.forEach((h) => {
+          if (h.details) h.details.forEach((d) => (totalQ += d.total));
+        });
+        document.getElementById("prof-total-q").innerText = totalQ;
+
+        document.getElementById("profile-modal").classList.add("open");
+      }
+
+      function showToast(msg) {
+        const container = document.getElementById("toast-container");
+        const el = document.createElement("div");
+        el.className = "toast";
+        el.innerHTML = `<div><h4>Notificação</h4><p>${msg}</p></div>`;
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 4000);
+      }
+      function showSnoopyReaction(type) {
+        if (!appData.snoopyMode) return;
+        const overlay = document.getElementById("snoopy-overlay");
+        const img = document.getElementById("snoopy-img");
+        if (snoopyAssets[type]) {
+          img.src = snoopyAssets[type];
+          overlay.classList.add("show");
+          setTimeout(() => overlay.classList.remove("show"), 3500);
+        }
+      }
+      function updateThemeLocks() {
+        const lvl = appData.level;
+        if (lvl >= 10)
+          document
+            .getElementById("theme-btn-neon")
+            .classList.replace("locked", "unlocked");
+        if (lvl >= 20)
+          document
+            .getElementById("theme-btn-deep")
+            .classList.replace("locked", "unlocked");
+      }
+      function toggleTheme(specific) {
+        if (specific === "neon" && appData.level < 10) return;
+        if (specific === "deep" && appData.level < 20) return;
+        document.body.className = "";
+        if (appData.snoopyMode) document.body.classList.add("theme-snoopy");
+        if (["dark", "neon", "deep"].includes(specific)) {
+          document.body.classList.add("dark-mode");
+          if (specific === "neon") document.body.classList.add("theme-neon");
+          if (specific === "deep") document.body.classList.add("theme-deep");
+        }
+        appData.activeTheme = specific;
+        document
+          .querySelectorAll(".theme-toggle")
+          .forEach((btn) => btn.classList.remove("active"));
+        const map = {
+          light: 0,
+          dark: 1,
+          neon: "theme-btn-neon",
+          deep: "theme-btn-deep",
+        };
+        if (typeof map[specific] === "string")
+          document.getElementById(map[specific]).classList.add("active");
+        else
+          document
+            .querySelectorAll(".theme-toggle")
+            [map[specific]].classList.add("active");
+        saveData();
+      }
+      function applyTheme(t) {
+        toggleTheme(t);
+      }
+      function toggleSnoopy() {
+        appData.snoopyMode = !appData.snoopyMode;
+        document.getElementById("toggle-snoopy").classList.toggle("active");
+        document.body.classList.toggle("theme-snoopy");
+        if (appData.snoopyMode) showSnoopyReaction("happy");
+        saveData();
+      }
+      function resetData() {
+        if (confirm("Isso apagará todo seu progresso. Continuar?")) {
+          localStorage.removeItem("portalData_v9");
+          location.reload();
+        }
+      }
+    </script>
+  </body>
+</html>
